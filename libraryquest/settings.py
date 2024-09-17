@@ -37,6 +37,9 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'rest_framework',
+    'corsheaders',
+    'libraryquest_app'
 ]
 
 MIDDLEWARE = [
@@ -47,9 +50,16 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
 ]
 
 ROOT_URLCONF = 'libraryquest.urls'
+
+# CORS_ORIGIN_ALLOW_ALL = True # DO NOT DEPLOY TO PROD
+
+CORS_ORIGIN_WHITELIST = [
+    'http://localhost:5173',  # The default port for create-react-app
+]
 
 TEMPLATES = [
     {

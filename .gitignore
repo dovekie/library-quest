@@ -3,3 +3,4 @@ geckodriver.log
 library-quest-env
 .DS_Store
 *.pyc
+.env

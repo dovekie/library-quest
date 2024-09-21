@@ -1,10 +1,13 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
 import "./App.css";
+import { LibraryAddress } from "./components/LibraryAddress";
+import { MapBox } from "./mapInterface/MapBox";
+import { ILibraryAddress } from "./types/ILibraryAddress";
 
 function App() {
   const [count, setCount] = useState(0);
-  const [libraries, setLibraries] = useState([]);
+  const [libraries, setLibraries] = useState([] as ILibraryAddress[]);
 
   useEffect(() => {
     const getAllLibraries = async () => {
@@ -12,23 +15,13 @@ function App() {
       setLibraries(res.data);
     };
     getAllLibraries();
-  }, []);
-
-  const LibraryAddress = (props) => {
-    return (
-      <div key={props.id} className="library">
-        <div className="library-address">{props.address}</div>
-        <div className="library-latlon">{props.lat}, {props.lon}</div>
-      </div>
-    )
-  }
+  }, [] );
 
   return (
     <>
       <h1>Library Quest</h1>
-      {
-        libraries.map(LibraryAddress)
-      }
+      {libraries.map(LibraryAddress)}
+      <MapBox libraries={libraries} />
       <div className="card">
         <button onClick={() => setCount((count) => count + 1)}>
           count is {count}

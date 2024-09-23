@@ -21,6 +21,7 @@ from libraryquest_app import views
 
 router = DefaultRouter()
 router.register(r'libraries', views.LibraryView)
+router.register(r'readers', views.ReaderView)
 
 urlpatterns = [
     path("", views.default_view),

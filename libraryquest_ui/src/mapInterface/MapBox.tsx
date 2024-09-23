@@ -3,10 +3,11 @@ import { ILibraryAddress } from "../types/ILibraryAddress";
 import { IPoi } from "../types/IPoi";
 import { PoiMarkers } from "./PoiMarkers";
 
-export const MapBox = (props: { libraries: ILibraryAddress[] }) => {
+export const MapBox = (props: { libraries: ILibraryAddress[], reader: any}) => { // FIXME any
   const locations: IPoi[] = props.libraries.map((library) => ({
     key: library.id,
     location: { lat: library.lat, lng: library.lon },
+    isMember: props.reader.membership_zone.includes(library.membership_zone)
   }));
   const googleMapApiKey = import.meta.env.VITE_REACT_APP_MAP_KEY;
   const googleMapId = import.meta.env.VITE_REACT_APP_MAP_ID;

@@ -4,4 +4,5 @@ export interface ILibraryAddress {
   address: string;
   lat: number;
   lon: number;
+  membership_zone: number
 }

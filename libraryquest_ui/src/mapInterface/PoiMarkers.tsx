@@ -5,7 +5,13 @@ export const PoiMarkers = (props: { pois: IPoi[] }) => {
   return (
     <>
       {props.pois.map((poi: IPoi) => (
-        <AdvancedMarker key={poi.key} position={poi.location}>
+        <AdvancedMarker
+          key={poi.key}
+          position={poi.location}
+          className={
+            poi.isMember ? "membership-marker" : "no-membership-marker"
+          }
+        >
           <Pin
             background={poi.isMember ? "#1ef5e8" : "#FBBC04"}
             glyphColor={"#000"}

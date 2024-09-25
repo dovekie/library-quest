@@ -3,11 +3,12 @@ import axios from "axios";
 import "./App.css";
 import { MapBox } from "./mapInterface/MapBox";
 import { ILibraryAddress } from "./types/ILibraryAddress";
+import { IReader } from "./types/IReader";
 
 function App() {
   const [count, setCount] = useState(0);
   const [libraries, setLibraries] = useState([] as ILibraryAddress[]);
-  const [reader, setReader] = useState({} as any); // FIXME any
+  const [reader, setReader] = useState({} as IReader); 
 
   useEffect(() => {
     const getAllLibraries = async () => {

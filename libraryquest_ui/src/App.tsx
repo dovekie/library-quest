@@ -4,11 +4,11 @@ import "./App.css";
 import { MapBox } from "./mapInterface/MapBox";
 import { ILibraryAddress } from "./types/ILibraryAddress";
 import { IReader } from "./types/IReader";
+import { Header } from "./components/Header";
 
 function App() {
-  const [count, setCount] = useState(0);
   const [libraries, setLibraries] = useState([] as ILibraryAddress[]);
-  const [reader, setReader] = useState({} as IReader); 
+  const [reader, setReader] = useState({} as IReader);
 
   useEffect(() => {
     const getAllLibraries = async () => {
@@ -16,7 +16,7 @@ function App() {
       setLibraries(res.data);
     };
     getAllLibraries();
-  }, [] );
+  }, []);
 
   useEffect(() => {
     const getFirstReader = async () => {
@@ -24,18 +24,15 @@ function App() {
       setReader(res.data[0]);
     };
     getFirstReader();
-  }, [] );
+  }, []);
 
   return (
     <>
-      <h1>Library Quest</h1>
-      <div>Welcome, {reader.name}</div>
-      <MapBox libraries={libraries} reader={reader} />
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-      </div>
+      <Header name={reader.name} loggedIn={true} />
+      <main>
+        <h1>Library Quest</h1>
+        <MapBox libraries={libraries} reader={reader} />
+      </main>
     </>
   );
 }

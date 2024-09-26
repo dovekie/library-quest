@@ -28,7 +28,7 @@ export const MapBox = (props: {
           defaultCenter={{ lat: 37.80131995454677, lng: -122.26345590757161 }}
           defaultZoom={10}
           gestureHandling={"greedy"}
-          disableDefaultUI={false}
+          disableDefaultUI={true}
         >
           <LibraryMarkers locations={locations} />
         </Map>

@@ -28,7 +28,7 @@ function App() {
 
   return (
     <>
-      <Header name={reader.name} loggedIn={true} />
+      <Header name={reader?.name} loggedIn={reader ? true : false} />
       <main>
         <h1>Library Quest</h1>
         <MapBox libraries={libraries} reader={reader} />

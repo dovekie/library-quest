@@ -18,10 +18,10 @@ function App() {
     getAllLibraries();
   }, []);
 
-  useEffect(() => {
+  useEffect(() => { // FIXME replace with a login
     const getFirstReader = async () => {
       const res = await axios.get("http://localhost:8000/api/readers/");
-      setReader(res.data[0]);
+      setReader(res.data[1]);
     };
     getFirstReader();
   }, []);

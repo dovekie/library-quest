@@ -22,12 +22,12 @@ class NewVisitorTest(unittest.TestCase):
         map_box = self.browser.find_element(By.CLASS_NAME, "map-box")
         self.assertTrue(map_box.is_displayed())
 
-    def test_logged_in_user_sees_membership_markers(self):
+    def test_logged_in_user_sees_membership_markers(self): 
         # FIXME set up a logged in user
         self.browser.get("http://localhost:5173/")
         time.sleep(5)
         membership_markers = self.browser.find_elements(By.CLASS_NAME, "membership-marker")
-        self.assertEqual(len(membership_markers), 3)
+        self.assertEqual(len(membership_markers), 3) # FIXME add a membership zone to the test user
 
     def test_can_select_libraries_and_retrieve_them_later(self):
         self.fail("Finish the test!")

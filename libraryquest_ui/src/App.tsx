@@ -18,17 +18,17 @@ function App() {
     getAllLibraries();
   }, []);
 
-  useEffect(() => {
+  useEffect(() => { // FIXME replace with a login
     const getFirstReader = async () => {
       const res = await axios.get("http://localhost:8000/api/readers/");
-      setReader(res.data[0]);
+      setReader(res.data[1]);
     };
     getFirstReader();
   }, []);
 
   return (
     <>
-      <Header name={reader.name} loggedIn={true} />
+      <Header name={reader?.name} loggedIn={reader ? true : false} />
       <main>
         <h1>Library Quest</h1>
         <MapBox libraries={libraries} reader={reader} />

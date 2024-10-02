@@ -109,6 +109,7 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+AUTH_USER_MODEL = 'libraryquest_app.Reader'
 
 # Internationalization
 # https://docs.djangoproject.com/en/4.2/topics/i18n/

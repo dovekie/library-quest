@@ -1,5 +1,8 @@
 from django.db import models
+from django.contrib.auth.models import AbstractUser
+
 # have you registered your models in admin.py?
+
 
 class MembershipZone(models.Model):
     name = models.CharField("Name", max_length=240)
@@ -22,7 +25,7 @@ class Library(models.Model):
         return self.name
 
 
-class Reader(models.Model):
+class Reader(AbstractUser):
     name = models.CharField("Name", max_length=240)
     email = models.EmailField("Email")
     membership_zone = models.ManyToManyField(MembershipZone)

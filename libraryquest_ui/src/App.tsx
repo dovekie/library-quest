@@ -1,3 +1,4 @@
+import { jwtDecode, JwtPayload } from "jwt-decode";
 import { useEffect, useState } from "react";
 import axios from "axios";
 import "./App.css";
@@ -22,12 +23,27 @@ function App() {
   }, []);
 
   const handleLogin = async () => {
-    const res = await axios.post("http://localhost:8000/auth/jwt/create", {
+    const tokenResponse = await axios.post("http://localhost:8000/auth/jwt/create", {
       username,
       password,
     });
-    setToken(res.data.access);
+    const decoded = jwtDecode(tokenResponse.data.access) as JwtPayload & {
+      user_id: string;
+    };
+    const readerResponse = await axios.get(
+      `http://localhost:8000/api/readers/${decoded.user_id}/`,
+      { headers: { Authorization: `JWT ${tokenResponse.data.access}` } }
+    );
+    setToken(tokenResponse.data.access);
+    setReader(readerResponse.data);
   };
+
+  const handleLogout = () => {
+    setReader({} as IReader)
+    setToken("")
+    setUsername("")
+    setPassword("")
+  }
 
   const handleUsernameChange = (event: { target: any }) => {
     // FIXME any
@@ -41,16 +57,16 @@ function App() {
 
   return (
     <>
-      <Header name={reader?.name} loggedIn={reader.name ? true : false} />
+      <Header name={reader.name} loggedIn={reader.name ? true : false} handleLogout={handleLogout} />
       <main>
         <h1>Library Quest</h1>
-        <form>
+        {!reader.name && <form>
           <input name="username" onInput={handleUsernameChange}></input>
           <input name="password" onInput={handlePasswordChange}></input>
           <button type="button" onClick={handleLogin}>
             Submit
           </button>
-        </form>
+        </form>}
         <MapBox libraries={libraries} reader={reader} />
       </main>
     </>

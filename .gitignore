@@ -4,3 +4,4 @@ library-quest-env
 .DS_Store
 *.pyc
 .env
+*.rtf

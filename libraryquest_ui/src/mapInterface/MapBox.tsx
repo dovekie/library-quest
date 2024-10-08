@@ -28,7 +28,7 @@ export const MapBox = (props: {
       >
         <Map
           mapId={googleMapId}
-          style={{ width: "50vw", height: "50vh" }}
+          style={{ width: "80vw", height: "80vh" }}
           defaultCenter={{ lat: 37.80131995454677, lng: -122.26345590757161 }}
           defaultZoom={10}
           gestureHandling={"greedy"}

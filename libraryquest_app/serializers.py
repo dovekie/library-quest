@@ -11,10 +11,12 @@ class LibrarySerializer(serializers.ModelSerializer):
         model = Library
         fields = "__all__"
 
+
 class MembershipZoneSerializer(serializers.ModelSerializer):
     class Meta:
         model = MembershipZone
         fields = "__all__"
+
 
 class ReaderSerializer(serializers.ModelSerializer):
     class Meta:
@@ -29,6 +31,7 @@ class ReaderSerializer(serializers.ModelSerializer):
             "name",
             "membership_zone",
         ]
+        extra_kwargs = {"membership_zone": {"allow_empty": True}}
 
 
 class UserCreateSerializer(BaseUserSerializer):

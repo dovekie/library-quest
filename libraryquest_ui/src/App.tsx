@@ -12,7 +12,6 @@ function App() {
   const [reader, setReader] = useState({} as IReader);
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
-  const [token, setToken] = useState("");
 
   useEffect(() => {
     const getAllLibraries = async () => {
@@ -23,10 +22,15 @@ function App() {
   }, []);
 
   const handleLogin = async () => {
-    const tokenResponse = await axios.post("http://localhost:8000/auth/jwt/create", {
-      username,
-      password,
-    });
+    setUsername("");
+    setPassword("");
+    const tokenResponse = await axios.post(
+      "http://localhost:8000/auth/jwt/create",
+      {
+        username,
+        password,
+      }
+    );
     const decoded = jwtDecode(tokenResponse.data.access) as JwtPayload & {
       user_id: string;
     };
@@ -34,16 +38,12 @@ function App() {
       `http://localhost:8000/api/readers/${decoded.user_id}/`,
       { headers: { Authorization: `JWT ${tokenResponse.data.access}` } }
     );
-    setToken(tokenResponse.data.access);
-    setReader(readerResponse.data);
+    setReader({ ...readerResponse.data, token: tokenResponse.data.access });
   };
 
   const handleLogout = () => {
-    setReader({} as IReader)
-    setToken("")
-    setUsername("")
-    setPassword("")
-  }
+    setReader({} as IReader);
+  };
 
   const handleUsernameChange = (event: { target: any }) => {
     // FIXME any
@@ -57,16 +57,16 @@ function App() {
 
   return (
     <>
-      <Header name={reader.name} loggedIn={reader.name ? true : false} handleLogout={handleLogout} />
+      <Header
+        name={reader.name}
+        loggedIn={reader.name ? true : false}
+        handleLogout={handleLogout}
+        handleUsernameChange={handleUsernameChange}
+        handlePasswordChange={handlePasswordChange}
+        handleLogin={handleLogin}
+      />
       <main>
         <h1>Library Quest</h1>
-        {!reader.name && <form>
-          <input name="username" onInput={handleUsernameChange}></input>
-          <input name="password" onInput={handlePasswordChange}></input>
-          <button type="button" onClick={handleLogin}>
-            Submit
-          </button>
-        </form>}
         <MapBox libraries={libraries} reader={reader} />
       </main>
     </>

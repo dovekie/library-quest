@@ -1,5 +1,5 @@
 export const Header = (props: {
-  name: string;
+  name: string | null;
   loggedIn: boolean;
   handleLogout: any;
   handleUsernameChange: any;
@@ -19,10 +19,12 @@ export const Header = (props: {
       {!props.loggedIn && (
         <form>
           <label>
-            Username: <input name="username" onInput={props.handleUsernameChange} />
+            Username:{" "}
+            <input name="username" onInput={props.handleUsernameChange} />
           </label>
           <label>
-            Password: <input name="password" onInput={props.handlePasswordChange} />
+            Password:{" "}
+            <input name="password" onInput={props.handlePasswordChange} />
           </label>
           <button type="button" onClick={props.handleLogin}>
             Submit

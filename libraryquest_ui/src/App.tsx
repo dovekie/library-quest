@@ -4,12 +4,12 @@ import axios from "axios";
 import "./App.css";
 import { MapBox } from "./mapInterface/MapBox";
 import { ILibraryAddress } from "./types/ILibraryAddress";
-import { IReader } from "./types/IReader";
 import { Header } from "./components/Header";
+import { IReader } from "./types/IReader";
 
 function App() {
   const [libraries, setLibraries] = useState([] as ILibraryAddress[]);
-  const [reader, setReader] = useState({} as IReader);
+  const [reader, setReader] = useState<IReader | null>(null);
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
 
@@ -41,8 +41,47 @@ function App() {
     setReader({ ...readerResponse.data, token: tokenResponse.data.access });
   };
 
+  const generateNewMembershipZoneList = (
+    action: "Add" | "Remove",
+    membershipZone: string
+  ) => {
+    const convertedMembershipZone = Number(membershipZone);
+    if (!reader) {
+      return;
+    }
+    if (action === "Add") {
+      return [...reader.membership_zone, convertedMembershipZone];
+    }
+    if (action === "Remove") {
+      return reader.membership_zone.filter(
+        (zone) => zone !== convertedMembershipZone
+      );
+    }
+  };
+
+  const handleUpdateMembership = async (event: any) => {
+    event.preventDefault();
+    const membershipZone = event.target[0].value;
+    const action = event.target[1].value;
+    console.log(generateNewMembershipZoneList(action, membershipZone));
+    if (!reader || !reader.token) {
+      return;
+    }
+    const decoded = jwtDecode(reader.token) as JwtPayload & {
+      user_id: string;
+    };
+    const updateResponse = await axios.patch(
+      `http://localhost:8000/api/readers/${decoded.user_id}/`,
+      {
+        membership_zone: generateNewMembershipZoneList(action, membershipZone),
+      },
+      { headers: { Authorization: `JWT ${reader.token}` } }
+    );
+    setReader({ ...updateResponse.data, token: reader.token });
+  };
+
   const handleLogout = () => {
-    setReader({} as IReader);
+    setReader(null);
   };
 
   const handleUsernameChange = (event: { target: any }) => {
@@ -58,8 +97,8 @@ function App() {
   return (
     <>
       <Header
-        name={reader.name}
-        loggedIn={reader.name ? true : false}
+        name={reader ? reader.name : null}
+        loggedIn={reader ? true : false}
         handleLogout={handleLogout}
         handleUsernameChange={handleUsernameChange}
         handlePasswordChange={handlePasswordChange}
@@ -67,7 +106,11 @@ function App() {
       />
       <main>
         <h1>Library Quest</h1>
-        <MapBox libraries={libraries} reader={reader} />
+        <MapBox
+          libraries={libraries}
+          reader={reader}
+          handleUpdateMembership={handleUpdateMembership}
+        />
       </main>
     </>
   );

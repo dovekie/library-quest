@@ -7,8 +7,17 @@ import {
   useAdvancedMarkerRef,
 } from "@vis.gl/react-google-maps";
 import { LibraryInfoWindowContent } from "./LibraryInfoWindow";
+import { IReader } from "../types/IReader";
 
-export const LibraryMarkers = ({ locations }: { locations: any }) => {
+export const LibraryMarkers = ({
+  locations,
+  reader,
+  handleUpdateMembership
+}: {
+  locations: any;
+  reader: IReader | null;
+  handleUpdateMembership: any
+}) => {
   return locations.map((location: ILibraryLocation) => {
     const [infoWindowShown, setInfoWindowShown] = useState(false);
     const handleMarkerClick = useCallback(
@@ -36,7 +45,14 @@ export const LibraryMarkers = ({ locations }: { locations: any }) => {
         </AdvancedMarker>
         {infoWindowShown && (
           <InfoWindow anchor={marker} onClose={handleClose}>
-            <LibraryInfoWindowContent library={{ name: location.name }} />
+            <LibraryInfoWindowContent
+              library={{
+                name: location.name,
+                membershipZone: location.membershipZone,
+              }}
+              reader={reader}
+              handleUpdateMembership={handleUpdateMembership} 
+            />
           </InfoWindow>
         )}
       </div>

@@ -3,4 +3,5 @@ export interface ILibraryLocation {
   name: string;
   location: google.maps.LatLngLiteral;
   isMember: boolean;
+  membershipZone: number;
 }

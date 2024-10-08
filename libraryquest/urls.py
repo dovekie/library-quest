@@ -23,6 +23,7 @@ from libraryquest_app import views
 router = DefaultRouter()
 router.register(r"libraries", views.LibraryView)
 router.register(r"readers", views.ReaderView)
+router.register(r"membershipZones", views.MembershipZoneView)
 
 urlpatterns = [
     path("", views.default_view),

@@ -3,7 +3,7 @@ from djoser.serializers import (
     UserSerializer,
     UserCreateSerializer as BaseUserSerializer,
 )
-from .models import Library, Reader
+from .models import Library, Reader, MembershipZone
 
 
 class LibrarySerializer(serializers.ModelSerializer):
@@ -11,6 +11,10 @@ class LibrarySerializer(serializers.ModelSerializer):
         model = Library
         fields = "__all__"
 
+class MembershipZoneSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = MembershipZone
+        fields = "__all__"
 
 class ReaderSerializer(serializers.ModelSerializer):
     class Meta:

@@ -26,7 +26,7 @@ export const Header = (props: {
             Password:{" "}
             <input name="password" onInput={props.handlePasswordChange} />
           </label>
-          <button type="button" onClick={props.handleLogin}>
+          <button className="login-button" type="button" onClick={props.handleLogin}>
             Submit
           </button>
         </form>

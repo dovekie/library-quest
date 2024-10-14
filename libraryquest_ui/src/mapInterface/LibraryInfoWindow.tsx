@@ -18,6 +18,7 @@ export const LibraryInfoWindowContent = (props: {
           value={props.library.membershipZone}
         />
         <input
+          className="change-membership-button"
           type="submit"
           disabled={!props.reader}
           value={readerHasMembership ? "Remove" : "Add"}

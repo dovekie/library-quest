@@ -11,7 +11,7 @@ class NewVisitorTest(unittest.TestCase):
     def tearDown(self):
         self.browser.quit()
 
-    def test_logged_in_user_sees_a_map(self):
+    def test_visitor_sees_a_map(self):
         # user visits the website
         self.browser.get("http://localhost:5173/")
 
@@ -21,30 +21,59 @@ class NewVisitorTest(unittest.TestCase):
         # sees a map
         map_box = self.browser.find_element(By.CLASS_NAME, "map-box")
         self.assertTrue(map_box.is_displayed())
-
-    def test_logged_in_user_sees_membership_markers(self): 
-        # FIXME set up a logged in user
+    
+    def test_one_info_window_shows_on_marker_click(self):
         self.browser.get("http://localhost:5173/")
-        time.sleep(5)
+        time.sleep(3)
+        non_membership_markers = self.browser.find_elements(By.CLASS_NAME, "no-membership-marker")
+        marker = non_membership_markers[0]
+        marker.click()
+        visible_info_windows = self.browser.find_elements(By.CLASS_NAME, "info_window")
+        self.assertEqual(len(visible_info_windows), 1)
+        next_marker = non_membership_markers[-1]
+        next_marker.click()
+        visible_info_windows = self.browser.find_elements(By.CLASS_NAME, "info_window")
+        self.assertEqual(len(visible_info_windows), 1)
+
+# FIXME these tests will break if any changes are made to the test user's memberships
+    def test_logged_in_user_sees_membership_markers(self): 
+        self.browser.get("http://localhost:5173/")
+        time.sleep(3)
+        password_box = self.browser.find_element(By.NAME, "password")
+        username_box = self.browser.find_element(By.NAME, "username")
+        login_button = self.browser.find_element(By.CLASS_NAME, "login-button")
+        password_box.send_keys("babelbook")
+        username_box.send_keys("robinswift")
+        login_button.click()
+        time.sleep(3)
         membership_markers = self.browser.find_elements(By.CLASS_NAME, "membership-marker")
-        self.assertEqual(len(membership_markers), 3) # FIXME add a membership zone to the test user
+        self.assertEqual(len(membership_markers), 3)
 
-    def test_can_select_libraries_and_retrieve_them_later(self):
-        self.fail("Finish the test!")
-
-        # is invited to enter their location
-
-        # is shown a map of nearby libraries
-
-        # is shown a list of libraries
-
-        # can check off libraries to indicate whether they have a library card for that library yet
-
-        # the page updates to show the checked-off libraries
-
-        # the site generates a unique URL for the user
-
-        # when the user returns to that URL, their libraries are still checked off
+    def test_user_can_add_and_remove_memberships(self):
+        self.browser.get("http://localhost:5173/")
+        time.sleep(3)
+        password_box = self.browser.find_element(By.NAME, "password")
+        username_box = self.browser.find_element(By.NAME, "username")
+        login_button = self.browser.find_element(By.CLASS_NAME, "login-button")
+        password_box.send_keys("babelbook")
+        username_box.send_keys("robinswift")
+        login_button.click()
+        time.sleep(3)
+        non_membership_markers = self.browser.find_elements(By.CLASS_NAME, "no-membership-marker")
+        marker = non_membership_markers[0]
+        marker.click()
+        time.sleep(3)
+        add_membership_button = self.browser.find_element(By.CLASS_NAME, "change-membership-button")
+        add_membership_button.click()
+        time.sleep(3)
+        membership_markers = self.browser.find_elements(By.CLASS_NAME, "membership-marker")
+        self.assertEqual(len(membership_markers), 4)
+        marker.click()
+        remove_membership_button = self.browser.find_element(By.CLASS_NAME, "change-membership-button")
+        remove_membership_button.click()
+        time.sleep(3)
+        membership_markers = self.browser.find_elements(By.CLASS_NAME, "membership-marker")
+        self.assertEqual(len(membership_markers), 3)
 
 if __name__ == "__main__":
     unittest.main(warnings="ignore")

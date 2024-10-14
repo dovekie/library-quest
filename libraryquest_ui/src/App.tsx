@@ -1,6 +1,7 @@
 import { jwtDecode, JwtPayload } from "jwt-decode";
 import { useEffect, useState } from "react";
 import axios from "axios";
+import Cookies from "js-cookie";
 import "./App.css";
 import { MapBox } from "./mapInterface/MapBox";
 import { ILibraryAddress } from "./types/ILibraryAddress";
@@ -38,6 +39,10 @@ function App() {
       `http://localhost:8000/api/readers/${decoded.user_id}/`,
       { headers: { Authorization: `JWT ${tokenResponse.data.access}` } }
     );
+    Cookies.set("refreshToken", tokenResponse.data.refresh, {
+      sameSite: "none",
+      secure: true,
+    });
     setReader({ ...readerResponse.data, token: tokenResponse.data.access });
   };
 

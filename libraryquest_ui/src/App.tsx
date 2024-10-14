@@ -1,6 +1,7 @@
 import { jwtDecode, JwtPayload } from "jwt-decode";
 import { useEffect, useState } from "react";
 import axios from "axios";
+import Cookies from "js-cookie";
 import "./App.css";
 import { MapBox } from "./mapInterface/MapBox";
 import { ILibraryAddress } from "./types/ILibraryAddress";
@@ -21,24 +22,48 @@ function App() {
     getAllLibraries();
   }, []);
 
+  useEffect(() => {
+    const refreshJwtToken = async () => {
+      const refreshToken = await Cookies.get("refreshToken");
+      if (refreshToken) {
+        const response = await axios.post(
+          "http://localhost:8000/auth/jwt/refresh",
+          { refresh: refreshToken }
+        );
+        const tokenResponse = response.data;
+        await getAuthedReader(tokenResponse);
+      }
+    };
+    refreshJwtToken();
+  }, []);
+
   const handleLogin = async () => {
     setUsername("");
     setPassword("");
-    const tokenResponse = await axios.post(
-      "http://localhost:8000/auth/jwt/create",
-      {
-        username,
-        password,
-      }
-    );
-    const decoded = jwtDecode(tokenResponse.data.access) as JwtPayload & {
+    const response = await axios.post("http://localhost:8000/auth/jwt/create", {
+      username,
+      password,
+    });
+    const tokenResponse = response.data;
+    await getAuthedReader(tokenResponse);
+  };
+
+  const getAuthedReader = async (tokenResponse: any) => {
+    // FIXME any
+    const decoded = jwtDecode(tokenResponse.access) as JwtPayload & {
       user_id: string;
     };
     const readerResponse = await axios.get(
       `http://localhost:8000/api/readers/${decoded.user_id}/`,
-      { headers: { Authorization: `JWT ${tokenResponse.data.access}` } }
+      { headers: { Authorization: `JWT ${tokenResponse.access}` } }
     );
-    setReader({ ...readerResponse.data, token: tokenResponse.data.access });
+    if (tokenResponse.refresh) {
+      Cookies.set("refreshToken", tokenResponse.refresh, {
+        sameSite: "none",
+        secure: true,
+      });
+    }
+    setReader({ ...readerResponse.data, token: tokenResponse.access });
   };
 
   const generateNewMembershipZoneList = (
@@ -63,7 +88,6 @@ function App() {
     event.preventDefault();
     const membershipZone = event.target[0].value;
     const action = event.target[1].value;
-    console.log(generateNewMembershipZoneList(action, membershipZone));
     if (!reader || !reader.token) {
       return;
     }
@@ -81,6 +105,7 @@ function App() {
   };
 
   const handleLogout = () => {
+    Cookies.remove("refreshToken");
     setReader(null);
   };
 

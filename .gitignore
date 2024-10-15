@@ -5,3 +5,4 @@ library-quest-env
 *.pyc
 .env
 *.rtf
+database-backup*

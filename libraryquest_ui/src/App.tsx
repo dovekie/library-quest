@@ -15,10 +15,10 @@ import {
 } from "./api/apiInterface";
 
 function App() {
-  const [libraries, setLibraries] = useState([] as ILibraryAddress[]);
+  const [libraries, setLibraries] = useState<ILibraryAddress[]>([]);
   const [reader, setReader] = useState<IReader | null>(null);
-  const [username, setUsername] = useState("");
-  const [password, setPassword] = useState("");
+  const [username, setUsername] = useState<string>("");
+  const [password, setPassword] = useState<string>("");
 
   useEffect(() => {
     const getAllLibraries = async () => {

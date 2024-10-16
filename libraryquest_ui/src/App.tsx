@@ -1,12 +1,18 @@
 import { jwtDecode, JwtPayload } from "jwt-decode";
 import { useEffect, useState } from "react";
-import axios from "axios";
 import Cookies from "js-cookie";
 import "./App.css";
 import { MapBox } from "./mapInterface/MapBox";
 import { ILibraryAddress } from "./types/ILibraryAddress";
 import { Header } from "./components/Header";
 import { IReader } from "./types/IReader";
+import {
+  fetchLibraries,
+  fetchNewJwtToken,
+  fetchReader,
+  fetchRefreshedJwtToken,
+  updateReaderMembership,
+} from "./api/apiInterface";
 
 function App() {
   const [libraries, setLibraries] = useState([] as ILibraryAddress[]);
@@ -16,8 +22,8 @@ function App() {
 
   useEffect(() => {
     const getAllLibraries = async () => {
-      const res = await axios.get("http://localhost:8000/api/libraries/");
-      setLibraries(res.data);
+      const data = await fetchLibraries();
+      setLibraries(data);
     };
     getAllLibraries();
   }, []);
@@ -26,11 +32,7 @@ function App() {
     const refreshJwtToken = async () => {
       const refreshToken = await Cookies.get("refreshToken");
       if (refreshToken) {
-        const response = await axios.post(
-          "http://localhost:8000/auth/jwt/refresh",
-          { refresh: refreshToken }
-        );
-        const tokenResponse = response.data;
+        const tokenResponse = await fetchRefreshedJwtToken(refreshToken);
         await getAuthedReader(tokenResponse);
       }
     };
@@ -40,30 +42,28 @@ function App() {
   const handleLogin = async () => {
     setUsername("");
     setPassword("");
-    const response = await axios.post("http://localhost:8000/auth/jwt/create", {
+    const tokenResponse = await fetchNewJwtToken({
       username,
       password,
     });
-    const tokenResponse = response.data;
     await getAuthedReader(tokenResponse);
   };
 
-  const getAuthedReader = async (tokenResponse: any) => {
-    // FIXME any
+  const getAuthedReader = async (tokenResponse: {
+    access: string;
+    refresh?: string;
+  }) => {
     const decoded = jwtDecode(tokenResponse.access) as JwtPayload & {
       user_id: string;
     };
-    const readerResponse = await axios.get(
-      `http://localhost:8000/api/readers/${decoded.user_id}/`,
-      { headers: { Authorization: `JWT ${tokenResponse.access}` } }
-    );
+    const reader = await fetchReader(decoded.user_id, tokenResponse.access);
     if (tokenResponse.refresh) {
       Cookies.set("refreshToken", tokenResponse.refresh, {
         sameSite: "none",
         secure: true,
       });
     }
-    setReader({ ...readerResponse.data, token: tokenResponse.access });
+    setReader({ ...reader, token: tokenResponse.access });
   };
 
   const generateNewMembershipZoneList = (
@@ -94,14 +94,12 @@ function App() {
     const decoded = jwtDecode(reader.token) as JwtPayload & {
       user_id: string;
     };
-    const updateResponse = await axios.patch(
-      `http://localhost:8000/api/readers/${decoded.user_id}/`,
-      {
-        membership_zone: generateNewMembershipZoneList(action, membershipZone),
-      },
-      { headers: { Authorization: `JWT ${reader.token}` } }
+    const updateResponse = await updateReaderMembership(
+      decoded.user_id,
+      generateNewMembershipZoneList(action, membershipZone),
+      reader.token
     );
-    setReader({ ...updateResponse.data, token: reader.token });
+    setReader({ ...updateResponse, token: reader.token });
   };
 
   const handleLogout = () => {

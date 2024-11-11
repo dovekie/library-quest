@@ -1,45 +1,69 @@
 import axios from "axios";
+import { TApiResponse } from "../types/TApiResponse";
+import toast from "react-hot-toast";
 
-export const fetchLibraries = async () => {
-  return callAPI("get", "api/libraries");
+export const fetchLibraries = async (): Promise<TApiResponse<any>> => {
+  return callAPI({ method: "get", url: "api/libraries" });
 };
 
 export const fetchNewJwtToken = async (userLogin: {
   username: string;
   password: string;
-}) => {
-  return callAPI("post", "auth/jwt/create", userLogin);
+}): Promise<TApiResponse<any>> => {
+  return callAPI({
+    method: "post",
+    url: "auth/jwt/create",
+    data: userLogin,
+    customErrorMessage: "Incorrect email or password.",
+  });
 };
 
-export const fetchRefreshedJwtToken = async (refreshToken: string) => {
-  return callAPI("post", "auth/jwt/refresh", { refresh: refreshToken });
+export const fetchRefreshedJwtToken = async (
+  refreshToken: string
+): Promise<TApiResponse<any>> => {
+  return callAPI({
+    method: "post",
+    url: "auth/jwt/refresh",
+    data: { refresh: refreshToken },
+    customErrorMessage: "You have been logged out.",
+  });
 };
 
-export const fetchReader = async (readerId: string, authToken: string) => {
-  return callAPI("get", `api/readers/${readerId}`, undefined, authToken);
+export const fetchReader = async (
+  readerId: string,
+  authToken: string
+): Promise<TApiResponse<any>> => {
+  return callAPI({ method: "get", url: `api/readers/${readerId}`, authToken });
 };
 
 export const updateReaderMembership = async (
   readerId: string,
   membershipZone: number[] | undefined,
   authToken: string
-) => {
-  return callAPI(
-    "patch",
-    `api/readers/${readerId}`,
-    {
+): Promise<TApiResponse<any>> => {
+  return callAPI({
+    method: "patch",
+    url: `api/readers/${readerId}`,
+    data: {
       membership_zone: membershipZone,
     },
-    authToken
-  );
+    authToken,
+  });
 };
 
-export const callAPI = async (
-  method: string,
-  url: string,
-  data?: Record<string, any>,
-  authToken?: string
-) => {
+export const callAPI = async ({
+  method,
+  url,
+  data,
+  authToken,
+  customErrorMessage,
+}: {
+  method: string;
+  url: string;
+  data?: Record<string, any>;
+  authToken?: string;
+  customErrorMessage?: string;
+}) => {
   try {
     const response = await axios({
       method,
@@ -47,8 +71,10 @@ export const callAPI = async (
       ...(data ? { data } : {}),
       ...(authToken ? { headers: { Authorization: `JWT ${authToken}` } } : {}),
     });
-    return response.data;
-  } catch (error) {
-    console.log(error);
+    return { data: response.data };
+  } catch (error: any) {
+    // FIXME any
+    toast(customErrorMessage ?? error.message);
+    return { error: { message: error.message, statusCode: error.status } };
   }
 };

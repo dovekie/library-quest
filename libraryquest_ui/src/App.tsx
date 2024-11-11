@@ -1,6 +1,7 @@
 import { jwtDecode, JwtPayload } from "jwt-decode";
-import { useEffect, useState } from "react";
+import { SetStateAction, useEffect, useState } from "react";
 import Cookies from "js-cookie";
+import toast, { Toaster } from "react-hot-toast";
 import "./App.css";
 import { MapBox } from "./mapInterface/MapBox";
 import { ILibraryAddress } from "./types/ILibraryAddress";
@@ -13,6 +14,7 @@ import {
   fetchRefreshedJwtToken,
   updateReaderMembership,
 } from "./api/apiInterface";
+import { ErrorBoundary } from "./components/ErrorBoundary";
 
 function App() {
   const [libraries, setLibraries] = useState<ILibraryAddress[]>([]);
@@ -20,10 +22,11 @@ function App() {
   const [username, setUsername] = useState<string>("");
   const [password, setPassword] = useState<string>("");
 
+  // called asynchronously after render
   useEffect(() => {
     const getAllLibraries = async () => {
-      const data = await fetchLibraries();
-      setLibraries(data);
+      const response = await fetchLibraries();
+      setLibraries(response.data);
     };
     getAllLibraries();
   }, []);
@@ -33,7 +36,11 @@ function App() {
       const refreshToken = await Cookies.get("refreshToken");
       if (refreshToken) {
         const tokenResponse = await fetchRefreshedJwtToken(refreshToken);
-        await getAuthedReader(tokenResponse);
+        if (tokenResponse.error) {
+          await Cookies.remove("refreshToken");
+          return;
+        }
+        await getAuthedReader(tokenResponse.data);
       }
     };
     refreshJwtToken();
@@ -46,7 +53,9 @@ function App() {
       username,
       password,
     });
-    await getAuthedReader(tokenResponse);
+    if (tokenResponse.data) {
+      await getAuthedReader(tokenResponse.data);
+    }
   };
 
   const getAuthedReader = async (tokenResponse: {
@@ -56,14 +65,14 @@ function App() {
     const decoded = jwtDecode(tokenResponse.access) as JwtPayload & {
       user_id: string;
     };
-    const reader = await fetchReader(decoded.user_id, tokenResponse.access);
+    const response = await fetchReader(decoded.user_id, tokenResponse.access);
     if (tokenResponse.refresh) {
       Cookies.set("refreshToken", tokenResponse.refresh, {
         sameSite: "none",
         secure: true,
       });
     }
-    setReader({ ...reader, token: tokenResponse.access });
+    setReader({ ...response.data, token: tokenResponse.access });
   };
 
   const generateNewMembershipZoneList = (
@@ -84,7 +93,10 @@ function App() {
     }
   };
 
-  const handleUpdateMembership = async (event: any) => {
+  const handleUpdateMembership = async (event: {
+    preventDefault: () => void;
+    target: { value: any }[]; // FIXME any
+  }) => {
     event.preventDefault();
     const membershipZone = event.target[0].value;
     const action = event.target[1].value;
@@ -99,7 +111,7 @@ function App() {
       generateNewMembershipZoneList(action, membershipZone),
       reader.token
     );
-    setReader({ ...updateResponse, token: reader.token });
+    setReader({ ...updateResponse.data, token: reader.token });
   };
 
   const handleLogout = () => {
@@ -107,34 +119,39 @@ function App() {
     setReader(null);
   };
 
-  const handleUsernameChange = (event: { target: any }) => {
-    // FIXME any
+  const handleUsernameChange = (event: {
+    target: { value: SetStateAction<string> };
+  }) => {
     setUsername(event.target.value);
   };
 
-  const handlePasswordChange = (event: { target: any }) => {
-    // FIXME any
+  const handlePasswordChange = (event: {
+    target: { value: SetStateAction<string> };
+  }) => {
     setPassword(event.target.value);
   };
 
   return (
     <>
-      <Header
-        name={reader ? reader.name : null}
-        loggedIn={reader ? true : false}
-        handleLogout={handleLogout}
-        handleUsernameChange={handleUsernameChange}
-        handlePasswordChange={handlePasswordChange}
-        handleLogin={handleLogin}
-      />
-      <main>
-        <h1>Library Quest</h1>
-        <MapBox
-          libraries={libraries}
-          reader={reader}
-          handleUpdateMembership={handleUpdateMembership}
+      <ErrorBoundary>
+        <Header
+          name={reader ? reader.name : null}
+          loggedIn={reader ? true : false}
+          handleLogout={handleLogout}
+          handleUsernameChange={handleUsernameChange}
+          handlePasswordChange={handlePasswordChange}
+          handleLogin={handleLogin}
         />
-      </main>
+        <main>
+          <h1>Library Quest</h1>
+          <Toaster />
+          <MapBox
+            libraries={libraries}
+            reader={reader}
+            handleUpdateMembership={handleUpdateMembership}
+          />
+        </main>
+      </ErrorBoundary>
     </>
   );
 }

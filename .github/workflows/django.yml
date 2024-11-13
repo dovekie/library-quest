@@ -19,7 +19,7 @@ jobs:
       - name: Create .env file
         run: |
           touch .env
-          echo "${{secrets.TEST_SECRETS}}" >> .env
+          echo '${{secrets.TEST_SECRETS}}' >> .env
       - name: Set up Python ${{ matrix.python-version }}
         uses: actions/setup-python@v3
         with:

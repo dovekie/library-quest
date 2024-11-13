@@ -21,6 +21,7 @@ jobs:
           touch .env
           echo '${{secrets.TEST_SECRETS}}' >> .env
       - name: Test the env file
+        run: |
           cat .env
       - name: Set up Python ${{ matrix.python-version }}
         uses: actions/setup-python@v3

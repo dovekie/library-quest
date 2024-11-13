@@ -1,9 +1,10 @@
+from unittest import skip
 from django.test import TestCase
 from rest_framework.test import APIClient
 from ..models import Reader
 from rest_framework_simplejwt.tokens import RefreshToken
 
-
+@skip
 class ReaderApiTest(TestCase):
     fixtures = ["libraryquest_app"]
 

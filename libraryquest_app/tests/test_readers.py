@@ -8,6 +8,7 @@ class ReaderApiTest(TestCase):
     fixtures = ["libraryquest_app"]
 
     def test_superuser_can_get_reader_list(self):
+        print("Starting the reader tests")
         super_reader = Reader.objects.create_superuser(
             username="foo", email="foo@bar.baz", password="fooisI"
         )

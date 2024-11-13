@@ -5,6 +5,7 @@ class LibraryApiTest(TestCase):
     fixtures = ["libraryquest_app"]
 
     def test_libraries(self):
+        print("Starting the library test")
         client = Client()
         response = client.get("/api/libraries/")
         self.assertEqual(response.status_code, 200)

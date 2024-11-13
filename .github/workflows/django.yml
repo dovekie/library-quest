@@ -27,5 +27,6 @@ jobs:
       - name: Run Tests
         env:
           DJANGO_SECRET_KEY: ${{ secrets.TEST_SECRETS }}
+          DATABASE_NAME: ${{ secrets.TEST_SECRETS }}
         run: |
           python manage.py test

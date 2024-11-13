@@ -20,9 +20,6 @@ jobs:
         run: |
           touch .env
           echo '${{secrets.TEST_SECRETS}}' >> .env
-      - name: Test the env file
-        run: |
-          cat .env
       - name: Set up Python ${{ matrix.python-version }}
         uses: actions/setup-python@v3
         with:
@@ -32,5 +29,7 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt -v
       - name: Run Tests
+        env:
+          DJANGO_SECRET_KEY: ${{ secrets.TEST_SECRETS }}
         run: |
           python manage.py test

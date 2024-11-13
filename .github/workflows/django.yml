@@ -19,7 +19,7 @@ jobs:
       - name: Create .env file
         run: |
           touch .env
-          echo "${{secrets.TEST_SECRETS}}" >> .env
+          echo "${{secrets.SECRET_KEY}}" >> .env
       - name: Test the test secrets
         run: |
           cat .env

@@ -26,7 +26,11 @@ jobs:
           pip install -r requirements.txt
       - name: Run Tests
         env:
-          DJANGO_SECRET_KEY: ${{ secrets.TEST_SECRETS }}
           DATABASE_NAME: ${{ secrets.TEST_SECRETS }}
+          DATABASE_USER: ${{ secrets.TEST_SECRETS }}
+          DATABASE_PASSWORD: ${{ secrets.TEST_SECRETS }}
+          DATABASE_HOST: ${{ secrets.TEST_SECRETS }}
+          DATABASE_PORT: ${{ secrets.TEST_SECRETS }}
+          DJANGO_SECRET_KEY: ${{ secrets.TEST_SECRETS }}
         run: |
           python manage.py test

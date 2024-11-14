@@ -33,4 +33,4 @@ jobs:
           DATABASE_PORT: ${{ secrets.TEST_SECRETS }}
           DJANGO_SECRET_KEY: ${{ secrets.TEST_SECRETS }}
         run: |
-          python manage.py test
+          python manage.py test -v 3

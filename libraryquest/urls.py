@@ -20,11 +20,13 @@ from django.urls import path, include
 from rest_framework.routers import DefaultRouter
 from libraryquest_app import views
 
+print("setting up the router")
 router = DefaultRouter()
 router.register(r"libraries", views.LibraryView)
 router.register(r"readers", views.ReaderView)
 router.register(r"membershipZones", views.MembershipZoneView)
 
+print("setting up urls")
 urlpatterns = [
     path("", views.default_view),
     path("api/", include(router.urls)),

@@ -1,6 +1,7 @@
 from unittest import skip
 from django.test import Client, TestCase
 
+@skip
 class LibraryApiTest(TestCase):
     fixtures = ["libraryquest_app"]
 

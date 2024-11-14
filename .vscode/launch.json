@@ -1,0 +1,14 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Django: Debug Current Test",
+      "type": "debugpy",
+      "request": "launch",
+      "justMyCode": false,
+      "program": "${workspaceFolder}/manage.py",
+      "args": ["test", "libraryquest_app.tests.${fileBasenameNoExtension}"],
+      "django": true
+    }
+  ]
+}

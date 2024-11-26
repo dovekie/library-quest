@@ -3,11 +3,10 @@
 }
 
 #root {
-  max-width: 1280px;
   margin: 0 auto;
   text-align: center;
   width: 100%;
-} 
+}
 
 body {
   display: flex;
@@ -15,22 +14,28 @@ body {
   min-height: 100vh;
   font-family: "Inter", sans-serif;
   background-color: whitesmoke;
-  /* background-image: linear-gradient(to top left, #adfff2, #ffa239); */
+  background-image: linear-gradient(to top, #e1e3e7, #f2e9d7);
 }
 
 .map-box {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  text-align: center;
+  border-radius: 25px;
+  border: ridge 4px #ccc;
+  width: fit-content;
+  align-self: center;
+  overflow: hidden;
+  margin-left: auto;
+  margin-right: auto;
+  margin-top: 4%;
 }
 
 .header {
   display: flex;
+  margin: 0;
   align-items: center;
   height: 65px;
-  background-image: linear-gradient(to bottom right, #adfff2, #ffa239);
+  background-image: linear-gradient(to bottom right, #9cc0f9, #a8dab5);
   padding: 20px;
+  box-shadow: 0px 0px 15px 5px #ccc;
 }
 
 .header--welcome-name {
@@ -42,4 +47,25 @@ body {
 .header--logout {
   margin-right: auto;
   font-size: 0.75rem;
+}
+
+.login-form {
+  display: flex;
+  flex-direction: column;
+  align-self: baseline;
+  width: 31%;
+  margin: 5px 1%;
+}
+
+.header--title {
+  font-family: "Cormorant Garamond", serif;
+  display: inline-block;
+  width: 31%;
+  margin: 5px 1%;
+  background: radial-gradient(
+    ellipse,
+    #ebe1e0cc 0%,
+    #baacab66 20%,
+    transparent 50%
+  );
 }

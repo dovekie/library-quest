@@ -1,3 +1,5 @@
+import { LoginForm } from "./LoginForm";
+
 export const Header = (props: {
   name: string | null;
   loggedIn: boolean;
@@ -17,20 +19,15 @@ export const Header = (props: {
         </div>
       )}
       {!props.loggedIn && (
-        <form>
-          <label>
-            Username:{" "}
-            <input name="username" onInput={props.handleUsernameChange} />
-          </label>
-          <label>
-            Password:{" "}
-            <input name="password" onInput={props.handlePasswordChange} />
-          </label>
-          <button className="login-button" type="button" onClick={props.handleLogin}>
-            Submit
-          </button>
-        </form>
+        <LoginForm
+          handleUsernameChange={props.handleUsernameChange}
+          handlePasswordChange={props.handlePasswordChange}
+          handleLogin={props.handleLogin}
+        />
       )}
+      <div className="header--title">
+        <h1 className="banner-text">Library Quest</h1>
+      </div>
     </header>
   </>
 );

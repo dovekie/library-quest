@@ -16,7 +16,7 @@ export const Header = (props: {
       )}
       {!props.loggedIn && (
         <div className="header--login">
-          <button type="button" onClick={props.openLoginWindow}>
+          <button type="button" name="login-button" onClick={props.openLoginWindow}>
             Log In
           </button>
         </div>

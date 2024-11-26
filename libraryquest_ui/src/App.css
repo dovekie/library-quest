@@ -44,16 +44,8 @@ body {
   margin-right: 10px;
 }
 
-.header--logout {
-  margin-right: auto;
-  font-size: 0.75rem;
-}
-
 .login-form {
-  display: flex;
-  flex-direction: column;
-  align-self: baseline;
-  width: 31%;
+  display: inline-block;
   margin: 5px 1%;
 }
 
@@ -63,9 +55,47 @@ body {
   width: 31%;
   margin: 5px 1%;
   background: radial-gradient(
-    ellipse,
-    #ebe1e0cc 0%,
-    #baacab66 20%,
+    ellipse at bottom,
+    #aaa8a7cc 0%,
+    #000000 100%,
     transparent 50%
   );
+  color: transparent;
+  background-clip: text;
+}
+
+.header--welcome {
+  width: 31%;
+}
+
+.header--login {
+  width: 31%;
+}
+
+.modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.6);
+}
+
+.login-modal {
+  position: fixed;
+  background-image: linear-gradient(to top, #e1e3e7, #f2e9d7);
+  border: ridge 4px #ccc;
+  border-radius: 25px;
+  flex-shrink: 0;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.display-block {
+  display: block;
+}
+
+.display-none {
+  display: none;
 }

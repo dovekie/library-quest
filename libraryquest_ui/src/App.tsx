@@ -15,12 +15,14 @@ import {
   updateReaderMembership,
 } from "./api/apiInterface";
 import { ErrorBoundary } from "./components/ErrorBoundary";
+import { LoginModal } from "./components/LoginModal";
 
 function App() {
   const [libraries, setLibraries] = useState<ILibraryAddress[]>([]);
   const [reader, setReader] = useState<IReader | null>(null);
   const [username, setUsername] = useState<string>("");
   const [password, setPassword] = useState<string>("");
+  const [modalShown, showModal] = useState<boolean>(false);
 
   // called asynchronously after render
   useEffect(() => {
@@ -46,7 +48,13 @@ function App() {
     refreshJwtToken();
   }, []);
 
-  const handleLogin = async () => {
+  const resetForm = (event?: any) => {
+    if (event) {
+      event.target.form.reset();
+    }
+  };
+
+  const handleLogin = async (event?: any) => {
     setUsername("");
     setPassword("");
     const tokenResponse = await fetchNewJwtToken({
@@ -54,8 +62,10 @@ function App() {
       password,
     });
     if (tokenResponse.data) {
+      closeLoginWindow();
       await getAuthedReader(tokenResponse.data);
     }
+    resetForm(event);
   };
 
   const getAuthedReader = async (tokenResponse: {
@@ -131,6 +141,15 @@ function App() {
     setPassword(event.target.value);
   };
 
+  const openLoginWindow = () => {
+    showModal(true);
+  };
+
+  const closeLoginWindow = (event?: any) => {
+    resetForm(event);
+    showModal(false);
+  };
+
   return (
     <>
       <ErrorBoundary>
@@ -138,17 +157,21 @@ function App() {
           name={reader ? reader.name : null}
           loggedIn={reader ? true : false}
           handleLogout={handleLogout}
-          handleUsernameChange={handleUsernameChange}
-          handlePasswordChange={handlePasswordChange}
-          handleLogin={handleLogin}
+          openLoginWindow={openLoginWindow}
         />
         <main>
-          {/* <h1 className="hero-title">Library Quest</h1> */}
           <Toaster />
           <MapBox
             libraries={libraries}
             reader={reader}
             handleUpdateMembership={handleUpdateMembership}
+          />
+          <LoginModal
+            show={modalShown}
+            closeLoginWindow={closeLoginWindow}
+            handleUsernameChange={handleUsernameChange}
+            handlePasswordChange={handlePasswordChange}
+            handleLogin={handleLogin}
           />
         </main>
       </ErrorBoundary>

@@ -1,7 +1,7 @@
 import { jwtDecode, JwtPayload } from "jwt-decode";
 import { SetStateAction, useEffect, useState } from "react";
 import Cookies from "js-cookie";
-import toast, { Toaster } from "react-hot-toast";
+import { Toaster } from "react-hot-toast";
 import "./App.css";
 import { MapBox } from "./mapInterface/MapBox";
 import { ILibraryAddress } from "./types/ILibraryAddress";
@@ -143,7 +143,7 @@ function App() {
           handleLogin={handleLogin}
         />
         <main>
-          <h1>Library Quest</h1>
+          {/* <h1 className="hero-title">Library Quest</h1> */}
           <Toaster />
           <MapBox
             libraries={libraries}

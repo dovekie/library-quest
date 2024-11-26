@@ -16,14 +16,14 @@ export const LoginForm = (props: {
       </label>
     </div>
     <button
-      className="login-button submit"
+      className="submit"
       type="button"
       onClick={props.handleLogin}
     >
       Submit
     </button>
     <button
-      className="login-button cancel"
+      className="cancel"
       type="button"
       onClick={props.closeLoginWindow}
     >

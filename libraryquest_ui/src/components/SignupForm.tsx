@@ -3,38 +3,38 @@ export const SignupForm = (props: {
   handlePasswordChange: any;
   handleSignup: any;
   closeSignupWindow: any;
-}) => (
-  <form className="signup-form">
-    <div>
-      <label className="signup--label">
-        Name <input name="name" />
-      </label>
-    </div>
-    <div>
-      <label className="signup--label">
-        Username <input name="new_username" />
-      </label>
-    </div>
-    <div>
-      <label className="signup--label">
-        Email <input name="email" />
-      </label>
-    </div>
-    <div>
-      <label className="signup--label">
-        Password <input name="new_password" />
-      </label>
-    </div>
-    <div>
-      <label className="signup--label">
-        Re-type password <input name="re_password" />
-      </label>
-    </div>
-    <button className="submit_new_user" type="button" onClick={props.handleSignup}>
-      Submit
-    </button>
-    <button className="cancel" type="button" onClick={props.closeSignupWindow}>
-      Cancel
-    </button>
-  </form>
-);
+}) => {
+  const signupFields = [
+    { fieldText: "Name", fieldName: "name", fieldId: 1 },
+    { fieldText: "Username", fieldName: "new_username", fieldId: 2 },
+    { fieldText: "Email", fieldName: "email", fieldId: 3 },
+    { fieldText: "Password", fieldName: "new_password", fieldId: 4 },
+    { fieldText: "Re-type password", fieldName: "re_password", fieldId: 5 },
+  ];
+
+  return (
+    <form className="signup-form">
+      {signupFields.map((field) => (
+        <div key={field.fieldId}>
+          <label className="signup--label">
+            {field.fieldText} <input name={field.fieldName} />
+          </label>
+        </div>
+      ))}
+      <button
+        className="submit_new_user"
+        type="button"
+        onClick={props.handleSignup}
+      >
+        Submit
+      </button>
+      <button
+        className="cancel"
+        type="button"
+        onClick={props.closeSignupWindow}
+      >
+        Cancel
+      </button>
+    </form>
+  );
+};

@@ -82,7 +82,7 @@ body {
   background: rgba(0, 0, 0, 0.6);
 }
 
-.login-modal {
+.modal-window {
   position: fixed;
   background-image: linear-gradient(to top, #e1e3e7, #f2e9d7);
   border: ridge 4px #ccc;

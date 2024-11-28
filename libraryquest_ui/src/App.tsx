@@ -16,8 +16,9 @@ import {
   updateReaderMembership,
 } from "./api/apiInterface";
 import { ErrorBoundary } from "./components/ErrorBoundary";
-import { LoginModal } from "./components/LoginModal";
-import { SignupModal } from "./components/SignupModal";
+import { Modal } from "./components/Modal";
+import { LoginForm } from "./components/LoginForm";
+import { SignupForm } from "./components/SignupForm";
 
 function App() {
   const [libraries, setLibraries] = useState<ILibraryAddress[]>([]);
@@ -195,19 +196,27 @@ function App() {
             reader={reader}
             handleUpdateMembership={handleUpdateMembership}
           />
-          <LoginModal
+          <Modal
             show={modalShown}
-            closeLoginWindow={closeFormModal}
-            handleUsernameChange={handleUsernameChange}
-            handlePasswordChange={handlePasswordChange}
-            handleLogin={handleLogin}
+            children={
+              <LoginForm
+                closeLoginWindow={closeFormModal}
+                handleUsernameChange={handleUsernameChange}
+                handlePasswordChange={handlePasswordChange}
+                handleLogin={handleLogin}
+              />
+            }
           />
-          <SignupModal
+          <Modal
             show={signupModalShown}
-            closeSignupWindow={closeFormModal}
-            handleUsernameChange={handleUsernameChange}
-            handlePasswordChange={handlePasswordChange}
-            handleSignup={handleSignup}
+            children={
+              <SignupForm
+                closeSignupWindow={closeFormModal}
+                handleUsernameChange={handleUsernameChange}
+                handlePasswordChange={handlePasswordChange}
+                handleSignup={handleSignup}
+              />
+            }
           />
         </main>
       </ErrorBoundary>

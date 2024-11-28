@@ -29,6 +29,14 @@ export const fetchRefreshedJwtToken = async (
   });
 };
 
+export const createUser = async (userInfo: any): Promise<TApiResponse<any>> => {
+  return callAPI({
+    method: "post",
+    url: "auth/users",
+    data: { ...userInfo },
+  });
+};
+
 export const fetchReader = async (
   readerId: string,
   authToken: string

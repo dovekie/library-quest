@@ -35,6 +35,29 @@ class NewVisitorTest(unittest.TestCase):
         visible_info_windows = self.browser.find_elements(By.CLASS_NAME, "info_window")
         self.assertEqual(len(visible_info_windows), 1)
 
+    @unittest.skip("skip until we can also delete users")
+    def test_can_create_user(self):
+        self.browser.get("http://localhost:5173/")
+        time.sleep(3)
+        login_button = self.browser.find_element(By.NAME, "signup-button")
+        login_button.click()
+        name_box = self.browser.find_element(By.NAME, "name")
+        username_box = self.browser.find_element(By.NAME, "new_username")
+        email_box = self.browser.find_element(By.NAME, "email")
+        password_box = self.browser.find_element(By.NAME, "new_password")
+        re_password_box = self.browser.find_element(By.NAME, "re_password")
+        name_box.send_keys("ally aardvark")
+        username_box.send_keys("aardvark")
+        email_box.send_keys("aaa@ants.org")
+        password_box.send_keys("antlover")
+        re_password_box.send_keys("antlover")
+        time.sleep(3)
+        submit_button = self.browser.find_element(By.CLASS_NAME, "submit_new_user")
+        submit_button.click()
+        time.sleep(3)
+        welcome = self.browser.find_element(By.CLASS_NAME, "header--welcome-name")
+        self.assertIn(welcome.text, "Welcome, ally aardvark!")
+
 # FIXME these tests will break if any changes are made to the test user's memberships
     def test_logged_in_user_sees_membership_markers(self): 
         self.browser.get("http://localhost:5173/")
@@ -48,6 +71,8 @@ class NewVisitorTest(unittest.TestCase):
         username_box.send_keys("robinswift")
         login_button.click()
         time.sleep(3)
+        welcome = self.browser.find_element(By.CLASS_NAME, "header--welcome-name")
+        self.assertIn(welcome.text, "Welcome, Robin Swift!")
         membership_markers = self.browser.find_elements(By.CLASS_NAME, "membership-marker")
         self.assertEqual(len(membership_markers), 3)
 

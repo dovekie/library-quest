@@ -36,9 +36,17 @@ class ReaderSerializer(serializers.ModelSerializer):
 
 class UserCreateSerializer(BaseUserSerializer):
     class Meta(BaseUserSerializer.Meta):
-        fields = ["id", "email", "username", "password"]
+        fields = [
+            "id",
+            "email",
+            "username",
+            "password",
+            "first_name",
+            "last_name",
+            "name",
+        ]
 
 
 class CurrentUserSerializer(UserSerializer):
     class Meta(UserSerializer.Meta):
-        fields = ["id", "email", "username", "password"]
+        fields = ["id", "email", "username", "name", "password"]

@@ -8,6 +8,7 @@ import { ILibraryAddress } from "./types/ILibraryAddress";
 import { Header } from "./components/Header";
 import { IReader } from "./types/IReader";
 import {
+  createUser,
   fetchLibraries,
   fetchNewJwtToken,
   fetchReader,
@@ -16,6 +17,7 @@ import {
 } from "./api/apiInterface";
 import { ErrorBoundary } from "./components/ErrorBoundary";
 import { LoginModal } from "./components/LoginModal";
+import { SignupModal } from "./components/SignupModal";
 
 function App() {
   const [libraries, setLibraries] = useState<ILibraryAddress[]>([]);
@@ -23,6 +25,7 @@ function App() {
   const [username, setUsername] = useState<string>("");
   const [password, setPassword] = useState<string>("");
   const [modalShown, showModal] = useState<boolean>(false);
+  const [signupModalShown, showSignupModal] = useState<boolean>(false);
 
   // called asynchronously after render
   useEffect(() => {
@@ -62,7 +65,27 @@ function App() {
       password,
     });
     if (tokenResponse.data) {
-      closeLoginWindow();
+      closeFormModal();
+      await getAuthedReader(tokenResponse.data);
+    }
+    resetForm(event);
+  };
+
+  const handleSignup = async (event: { target: any }) => {
+    const { target } = event;
+    const response = await createUser({
+      username: target.form.new_username.value,
+      password: target.form.new_password.value,
+      re_password: target.form.re_password.value,
+      name: target.form.name.value,
+      email: target.form.email.value,
+    });
+    if (response.data) {
+      showSignupModal(false);
+      const tokenResponse = await fetchNewJwtToken({
+        username: target.form.new_username.value,
+        password: target.form.new_password.value,
+      });
       await getAuthedReader(tokenResponse.data);
     }
     resetForm(event);
@@ -145,9 +168,14 @@ function App() {
     showModal(true);
   };
 
-  const closeLoginWindow = (event?: any) => {
+  const openSignupWindow = () => {
+    showSignupModal(true);
+  };
+
+  const closeFormModal = (event?: any) => {
     resetForm(event);
     showModal(false);
+    showSignupModal(false);
   };
 
   return (
@@ -158,6 +186,7 @@ function App() {
           loggedIn={reader ? true : false}
           handleLogout={handleLogout}
           openLoginWindow={openLoginWindow}
+          openSignupWindow={openSignupWindow}
         />
         <main>
           <Toaster />
@@ -168,10 +197,17 @@ function App() {
           />
           <LoginModal
             show={modalShown}
-            closeLoginWindow={closeLoginWindow}
+            closeLoginWindow={closeFormModal}
             handleUsernameChange={handleUsernameChange}
             handlePasswordChange={handlePasswordChange}
             handleLogin={handleLogin}
+          />
+          <SignupModal
+            show={signupModalShown}
+            closeSignupWindow={closeFormModal}
+            handleUsernameChange={handleUsernameChange}
+            handlePasswordChange={handlePasswordChange}
+            handleSignup={handleSignup}
           />
         </main>
       </ErrorBoundary>

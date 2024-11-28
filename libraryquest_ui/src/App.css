@@ -68,7 +68,8 @@ body {
   width: 31%;
 }
 
-.header--login {
+.header--buttons {
+  display: inline-flex;
   width: 31%;
 }
 

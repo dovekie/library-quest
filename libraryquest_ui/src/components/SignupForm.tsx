@@ -1,3 +1,5 @@
+import { Button } from "./Button";
+
 export const SignupForm = (props: {
   handleUsernameChange: any;
   handlePasswordChange: any;
@@ -13,28 +15,24 @@ export const SignupForm = (props: {
   ];
 
   return (
-    <form className="signup-form">
+    <form  className="modal--form">
       {signupFields.map((field) => (
         <div key={field.fieldId}>
-          <label className="signup--label">
+          <label>
             {field.fieldText} <input name={field.fieldName} />
           </label>
         </div>
       ))}
-      <button
-        className="submit_new_user"
-        type="button"
+      <Button
+        id="submit-signup"
         onClick={props.handleSignup}
-      >
-        Submit
-      </button>
-      <button
-        className="cancel"
-        type="button"
+        label="Submit"
+      />
+      <Button
+        id="cancel-signup"
         onClick={props.closeSignupWindow}
-      >
-        Cancel
-      </button>
+        label="Cancel"
+      />
     </form>
   );
 };

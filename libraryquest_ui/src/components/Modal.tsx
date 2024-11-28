@@ -7,7 +7,7 @@ export const Modal = (props: {
     : "modal display-none";
   return (
     <div className={showHideClassName}>
-      <section className="modal-window">
+      <section className="modal--window">
         {props.children}
       </section>
     </div>

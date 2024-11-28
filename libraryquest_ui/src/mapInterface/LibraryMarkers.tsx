@@ -44,7 +44,7 @@ export const LibraryMarkers = ({
           />
         </AdvancedMarker>
         {infoWindowShown && (
-          <InfoWindow className="info_window" anchor={marker} onClose={handleClose}>
+          <InfoWindow className="info-window" anchor={marker} onClose={handleClose}>
             <LibraryInfoWindowContent
               library={{
                 name: location.name,

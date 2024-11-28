@@ -44,7 +44,7 @@ body {
   margin-right: 10px;
 }
 
-.login-form {
+.modal--form {
   display: inline-block;
   margin: 5px 1%;
 }
@@ -82,12 +82,11 @@ body {
   background: rgba(0, 0, 0, 0.6);
 }
 
-.modal-window {
+.modal--window {
   position: fixed;
   background-image: linear-gradient(to top, #e1e3e7, #f2e9d7);
   border: ridge 4px #ccc;
   border-radius: 25px;
-  flex-shrink: 0;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);

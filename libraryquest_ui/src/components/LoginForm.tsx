@@ -1,33 +1,23 @@
+import { Button } from "./Button";
+
 export const LoginForm = (props: {
   handleUsernameChange: any;
   handlePasswordChange: any;
   handleLogin: any;
   closeLoginWindow: any;
 }) => (
-  <form className="login-form">
+  <form className="modal--form">
     <div>
-      <label className="login--label">
+      <label>
         Username <input name="username" onInput={props.handleUsernameChange} />
       </label>
     </div>
     <div>
-      <label className="login--label">
+      <label>
         Password <input name="password" onInput={props.handlePasswordChange} />
       </label>
     </div>
-    <button
-      className="submit"
-      type="button"
-      onClick={props.handleLogin}
-    >
-      Submit
-    </button>
-    <button
-      className="cancel"
-      type="button"
-      onClick={props.closeLoginWindow}
-    >
-      Cancel
-    </button>
+    <Button id="submit-login" onClick={props.handleLogin} label="Submit" />
+    <Button id="cancel-login" onClick={props.closeLoginWindow} label="Cancel" />
   </form>
 );

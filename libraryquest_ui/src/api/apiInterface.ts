@@ -30,7 +30,6 @@ export const fetchRefreshedJwtToken = async (
 };
 
 export const createUser = async (userInfo: any): Promise<TApiResponse<any>> => {
-  console.log(userInfo)
   return callAPI({
     method: "post",
     url: "auth/users",

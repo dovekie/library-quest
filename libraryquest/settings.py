@@ -68,6 +68,7 @@ INSTALLED_APPS = [
     "rest_framework",
     "corsheaders",
     "djoser",
+    "drf_spectacular",
     "libraryquest_app",
 ]
 
@@ -94,7 +95,8 @@ CORS_ORIGIN_WHITELIST = [
 REST_FRAMEWORK = {
     "DEFAULT_AUTHENTICATION_CLASSES": (
         "rest_framework_simplejwt.authentication.JWTAuthentication",
-    )
+    ),
+    "DEFAULT_SCHEMA_CLASS": "drf_spectacular.openapi.AutoSchema",
 }
 
 SIMPLE_JWT = {
@@ -187,7 +189,9 @@ STATIC_URL = "static/"
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 DJOSER = {
-    'SERIALIZERS': {
-         'user_create': 'libraryquest_app.serializers.UserCreateSerializer'
-    }
+    "SERIALIZERS": {"user_create": "libraryquest_app.serializers.UserCreateSerializer"}
+}
+
+SWAGGER_SETTINGS = {
+    "exclude_namespaces": [],  # FIXME List URL namespaces to ignore
 }

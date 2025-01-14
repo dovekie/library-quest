@@ -1,9 +1,5 @@
-import json
 from django.http import HttpResponseNotFound
-from django.core.mail import send_mail
-from django.conf import settings
-from django.shortcuts import redirect
-from django.views.decorators.csrf import csrf_exempt
+from django.shortcuts import render
 from rest_framework import viewsets
 from rest_framework.permissions import IsAuthenticated
 from rest_framework_simplejwt.authentication import JWTAuthentication
@@ -27,30 +23,9 @@ class ReaderView(viewsets.ModelViewSet):
     permission_classes = [IsAuthenticated, UserPermission]
     serializer_class = ReaderSerializer
     queryset = Reader.objects.all()
-
-@csrf_exempt
-def send_mail_page(request):
-    context = {}
-    if request.method == "POST":
-        request_body = json.loads(request.body)
-        address = request_body["email"]
-
-        if address:
-            try:
-                send_mail(
-                    "Your LibraryQuest password reset link",
-                    "This is where the link goes",
-                    settings.EMAIL_HOST_USER,
-                    [address],
-                )
-                context["result"] = "email sent successfully"
-                # FIXME return something here
-            except Exception as e:
-                context["result"] = f"Error sending mail: {e}"
-                raise
-        return redirect("http://localhost:5173/") # FIXME don't hardcode this
-    else:
-        return HttpResponseNotFound("<h1>404 Not Found</h1>")
+    
+def confirm_new_password(request, uid, token):
+    return render(request, "confirm_password.html", {"uid": uid, "token": token})
 
 
 def default_view(request):

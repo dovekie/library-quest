@@ -65,7 +65,7 @@ export const resetPassword = async (
 
   return callAPI({
     method: "post",
-    url: `sendmail`,
+    url: `auth/users/reset_password`,
     data: {
       email,
     },

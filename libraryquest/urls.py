@@ -37,7 +37,7 @@ urlpatterns = [
     path("admin/", admin.site.urls),
     path("auth/", include("djoser.urls")),
     path("auth/", include("djoser.urls.jwt")),
-    path("sendmail/", views.send_mail_page),
+    path("users/reset_password/<uid>/<token>", views.confirm_new_password),
     # OpenAPI
     path("api/schema/", SpectacularAPIView.as_view(), name="schema"),
     # Two different OpenAPI UIs. Don't need both. FIXME pick one

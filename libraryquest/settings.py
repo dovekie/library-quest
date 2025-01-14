@@ -47,7 +47,7 @@ LOGGING = {
     "loggers": {
         "django": {
             "handlers": ["console"],
-            "level": os.getenv("DJANGO_LOG_LEVEL", "DEBUG"),
+            "level": os.getenv("DJANGO_LOG_LEVEL", "INFO"),
             "propagate": False,
         },
     },
@@ -197,7 +197,8 @@ STATIC_URL = "static/"
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 DJOSER = {
-    "SERIALIZERS": {"user_create": "libraryquest_app.serializers.UserCreateSerializer"}
+    "SERIALIZERS": {"user_create": "libraryquest_app.serializers.UserCreateSerializer"},
+    "PASSWORD_RESET_CONFIRM_URL": "users/reset_password/{uid}/{token}",
 }
 
 SWAGGER_SETTINGS = {

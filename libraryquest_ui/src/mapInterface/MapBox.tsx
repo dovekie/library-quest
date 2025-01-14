@@ -9,7 +9,7 @@ export const MapBox = (props: {
   reader: IReader | null;
   handleUpdateMembership: any;
 }) => {
-  const locations: ILibraryLocation[] = props.libraries.map((library) => ({
+  const locations: ILibraryLocation[] = props.libraries?.map((library) => ({
     key: library.id,
     name: library.name,
     location: { lat: library.lat, lng: library.lon },

@@ -37,10 +37,9 @@ urlpatterns = [
     path("admin/", admin.site.urls),
     path("auth/", include("djoser.urls")),
     path("auth/", include("djoser.urls.jwt")),
-
+    path("sendmail/", views.send_mail_page),
     # OpenAPI
     path("api/schema/", SpectacularAPIView.as_view(), name="schema"),
-    
     # Two different OpenAPI UIs. Don't need both. FIXME pick one
     # Swagger UI:
     path(

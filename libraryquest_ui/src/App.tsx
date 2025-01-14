@@ -193,8 +193,8 @@ function App() {
 
   const handleForgotPassword = async (event: { target: any }) => {
     const { target } = event;
-    console.log(target.form.email.value);
-    await resetPassword(target.form.email.value)
+    resetPassword(target.form.email.value)
+    closeAllModals();
   };
 
   return (

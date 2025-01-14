@@ -2,7 +2,7 @@ import json
 from django.http import HttpResponseNotFound
 from django.core.mail import send_mail
 from django.conf import settings
-from django.shortcuts import render
+from django.shortcuts import redirect
 from django.views.decorators.csrf import csrf_exempt
 from rest_framework import viewsets
 from rest_framework.permissions import IsAuthenticated
@@ -48,6 +48,7 @@ def send_mail_page(request):
             except Exception as e:
                 context["result"] = f"Error sending mail: {e}"
                 raise
+        return redirect("http://localhost:5173/") # FIXME don't hardcode this
     else:
         return HttpResponseNotFound("<h1>404 Not Found</h1>")
 

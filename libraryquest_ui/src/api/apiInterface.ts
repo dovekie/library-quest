@@ -59,6 +59,19 @@ export const updateReaderMembership = async (
   });
 };
 
+export const resetPassword = async (
+  email: string,
+): Promise<TApiResponse<any>> => {
+
+  return callAPI({
+    method: "post",
+    url: `auth/users/reset_password`,
+    data: {
+      email,
+    },
+  });
+};
+
 export const callAPI = async ({
   method,
   url,

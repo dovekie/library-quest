@@ -47,7 +47,7 @@ LOGGING = {
     "loggers": {
         "django": {
             "handlers": ["console"],
-            "level": os.getenv("DJANGO_LOG_LEVEL", "DEBUG"),
+            "level": os.getenv("DJANGO_LOG_LEVEL", "INFO"),
             "propagate": False,
         },
     },
@@ -90,6 +90,14 @@ ROOT_URLCONF = "libraryquest.urls"
 CORS_ORIGIN_WHITELIST = [
     "http://localhost:5173",  # The default port for create-react-app
 ]
+
+
+EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
+EMAIL_HOST = "smtp.gmail.com"
+EMAIL_USE_TLS = True
+EMAIL_PORT = 587
+EMAIL_HOST_USER = env("EMAIL_USER")
+EMAIL_HOST_PASSWORD = env("EMAIL_PASSWORD")
 
 
 REST_FRAMEWORK = {
@@ -189,7 +197,8 @@ STATIC_URL = "static/"
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 DJOSER = {
-    "SERIALIZERS": {"user_create": "libraryquest_app.serializers.UserCreateSerializer"}
+    "SERIALIZERS": {"user_create": "libraryquest_app.serializers.UserCreateSerializer"},
+    "PASSWORD_RESET_CONFIRM_URL": "users/reset_password/{uid}/{token}",
 }
 
 SWAGGER_SETTINGS = {

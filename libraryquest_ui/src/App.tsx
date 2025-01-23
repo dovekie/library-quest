@@ -13,12 +13,14 @@ import {
   fetchNewJwtToken,
   fetchReader,
   fetchRefreshedJwtToken,
+  resetPassword,
   updateReaderMembership,
 } from "./api/apiInterface";
 import { ErrorBoundary } from "./components/ErrorBoundary";
 import { Modal } from "./components/Modal";
 import { LoginForm } from "./components/LoginForm";
 import { SignupForm } from "./components/SignupForm";
+import { ForgotPasswordForm } from "./components/ForgotPasswordForm";
 
 function App() {
   const [libraries, setLibraries] = useState<ILibraryAddress[]>([]);
@@ -27,6 +29,7 @@ function App() {
   const [password, setPassword] = useState<string>("");
   const [modalShown, showModal] = useState<boolean>(false);
   const [signupModalShown, showSignupModal] = useState<boolean>(false);
+  const [resetModalShown, showResetModal] = useState<boolean>(false);
 
   // called asynchronously after render
   useEffect(() => {
@@ -66,7 +69,7 @@ function App() {
       password,
     });
     if (tokenResponse.data) {
-      closeFormModal();
+      closeAllModals();
       await getAuthedReader(tokenResponse.data);
     }
     resetForm(event);
@@ -173,10 +176,25 @@ function App() {
     showSignupModal(true);
   };
 
-  const closeFormModal = (event?: any) => {
+  const closeAllModals = (event?: any) => {
     resetForm(event);
     showModal(false);
     showSignupModal(false);
+    showResetModal(false);
+  };
+
+  const openPasswordResetForm = (event?: any) => {
+    if (event?.target?.form) {
+      resetForm(event);
+    }
+    closeAllModals();
+    showResetModal(true);
+  };
+
+  const handleForgotPassword = async (event: { target: any }) => {
+    const { target } = event;
+    resetPassword(target.form.email.value)
+    closeAllModals();
   };
 
   return (
@@ -200,10 +218,11 @@ function App() {
             show={modalShown}
             children={
               <LoginForm
-                closeLoginWindow={closeFormModal}
+                closeLoginWindow={closeAllModals}
                 handleUsernameChange={handleUsernameChange}
                 handlePasswordChange={handlePasswordChange}
                 handleLogin={handleLogin}
+                openPasswordResetForm={openPasswordResetForm}
               />
             }
           />
@@ -211,10 +230,19 @@ function App() {
             show={signupModalShown}
             children={
               <SignupForm
-                closeSignupWindow={closeFormModal}
+                closeSignupWindow={closeAllModals}
                 handleUsernameChange={handleUsernameChange}
                 handlePasswordChange={handlePasswordChange}
                 handleSignup={handleSignup}
+              />
+            }
+          />
+          <Modal
+            show={resetModalShown}
+            children={
+              <ForgotPasswordForm
+                handleForgotPassword={handleForgotPassword}
+                closeForgotPasswordWindow={closeAllModals}
               />
             }
           />

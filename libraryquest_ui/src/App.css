@@ -99,3 +99,8 @@ body {
 .display-none {
   display: none;
 }
+
+.login--forgot-password-text {
+  color: #0000ee;
+  text-decoration-line: underline;
+}

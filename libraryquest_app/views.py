@@ -1,4 +1,5 @@
 from django.http import HttpResponseNotFound
+from django.shortcuts import render
 from rest_framework import viewsets
 from rest_framework.permissions import IsAuthenticated
 from rest_framework_simplejwt.authentication import JWTAuthentication
@@ -22,6 +23,9 @@ class ReaderView(viewsets.ModelViewSet):
     permission_classes = [IsAuthenticated, UserPermission]
     serializer_class = ReaderSerializer
     queryset = Reader.objects.all()
+    
+def confirm_new_password(request, uid, token):
+    return render(request, "confirm_password.html", {"uid": uid, "token": token})
 
 
 def default_view(request):

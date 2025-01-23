@@ -1,4 +1,4 @@
 export interface TApiResponse<ResponseShape> {
   data?: ResponseShape;
-  error?: { message: string; statusCode: string };
+  error?: { message: string; statusCode: number | undefined };
 }

@@ -35,7 +35,9 @@ function App() {
   useEffect(() => {
     const getAllLibraries = async () => {
       const response = await fetchLibraries();
-      setLibraries(response.data);
+      if (response.data) {
+        setLibraries(response.data);
+      }
     };
     getAllLibraries();
   }, []);
@@ -49,7 +51,9 @@ function App() {
           await Cookies.remove("refreshToken");
           return;
         }
-        await getAuthedReader(tokenResponse.data);
+        if (tokenResponse.data) {
+          await getAuthedReader(tokenResponse.data);
+        }
       }
     };
     refreshJwtToken();
@@ -90,7 +94,9 @@ function App() {
         username: target.form.new_username.value,
         password: target.form.new_password.value,
       });
-      await getAuthedReader(tokenResponse.data);
+      if (tokenResponse.data) {
+        await getAuthedReader(tokenResponse.data);
+      }
     }
     resetForm(event);
   };
@@ -109,7 +115,9 @@ function App() {
         secure: true,
       });
     }
-    setReader({ ...response.data, token: tokenResponse.access });
+    if (response.data) {
+      setReader({ ...response.data, token: tokenResponse.access });
+    }
   };
 
   const generateNewMembershipZoneList = (
@@ -148,7 +156,9 @@ function App() {
       generateNewMembershipZoneList(action, membershipZone),
       reader.token
     );
-    setReader({ ...updateResponse.data, token: reader.token });
+    if (updateResponse.data) {
+      setReader({ ...updateResponse.data, token: reader.token });
+    }
   };
 
   const handleLogout = () => {
@@ -193,7 +203,7 @@ function App() {
 
   const handleForgotPassword = async (event: { target: any }) => {
     const { target } = event;
-    resetPassword(target.form.email.value)
+    resetPassword(target.form.email.value);
     closeAllModals();
   };
 

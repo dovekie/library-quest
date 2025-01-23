@@ -1,15 +1,21 @@
 import axios from "axios";
 import { TApiResponse } from "../types/TApiResponse";
 import toast from "react-hot-toast";
+import { ILibraryAddress } from "../types/ILibraryAddress";
+import { IUser } from "../types/IUser";
+import { IReader } from "../types/IReader";
+import { IAuthResponse } from "../types/IAuthResponse";
 
-export const fetchLibraries = async (): Promise<TApiResponse<any>> => {
+export const fetchLibraries = async (): Promise<
+  TApiResponse<ILibraryAddress[]>
+> => {
   return callAPI({ method: "get", url: "api/libraries" });
 };
 
 export const fetchNewJwtToken = async (userLogin: {
   username: string;
   password: string;
-}): Promise<TApiResponse<any>> => {
+}): Promise<TApiResponse<IAuthResponse>> => {
   return callAPI({
     method: "post",
     url: "auth/jwt/create",
@@ -20,7 +26,7 @@ export const fetchNewJwtToken = async (userLogin: {
 
 export const fetchRefreshedJwtToken = async (
   refreshToken: string
-): Promise<TApiResponse<any>> => {
+): Promise<TApiResponse<IAuthResponse>> => {
   return callAPI({
     method: "post",
     url: "auth/jwt/refresh",
@@ -29,18 +35,21 @@ export const fetchRefreshedJwtToken = async (
   });
 };
 
-export const createUser = async (userInfo: any): Promise<TApiResponse<any>> => {
-  return callAPI({
+export const createUser = async (
+  userInfo: any // FIXME any
+): Promise<TApiResponse<IUser>> => {
+  const response = await callAPI({
     method: "post",
     url: "auth/users",
     data: { ...userInfo },
   });
+  return response;
 };
 
 export const fetchReader = async (
   readerId: string,
   authToken: string
-): Promise<TApiResponse<any>> => {
+): Promise<TApiResponse<IReader>> => {
   return callAPI({ method: "get", url: `api/readers/${readerId}`, authToken });
 };
 
@@ -48,7 +57,7 @@ export const updateReaderMembership = async (
   readerId: string,
   membershipZone: number[] | undefined,
   authToken: string
-): Promise<TApiResponse<any>> => {
+): Promise<TApiResponse<IReader>> => {
   return callAPI({
     method: "patch",
     url: `api/readers/${readerId}`,
@@ -60,9 +69,8 @@ export const updateReaderMembership = async (
 };
 
 export const resetPassword = async (
-  email: string,
-): Promise<TApiResponse<any>> => {
-
+  email: string
+): Promise<TApiResponse<{email: string}>> => {
   return callAPI({
     method: "post",
     url: `auth/users/reset_password`,
@@ -81,7 +89,7 @@ export const callAPI = async ({
 }: {
   method: string;
   url: string;
-  data?: Record<string, any>;
+  data?: Record<string, any>; // FIXME any
   authToken?: string;
   customErrorMessage?: string;
 }) => {
@@ -93,9 +101,13 @@ export const callAPI = async ({
       ...(authToken ? { headers: { Authorization: `JWT ${authToken}` } } : {}),
     });
     return { data: response.data };
-  } catch (error: any) {
-    // FIXME any
-    toast(customErrorMessage ?? error.message);
-    return { error: { message: error.message, statusCode: error.status } };
+  } catch (error: unknown) {
+    if (axios.isAxiosError(error)) {
+      toast(customErrorMessage ?? error.message);
+      return { error: { message: error.message, statusCode: error.status } };
+    }
+    console.log("Unknown error:", error);
+    toast("Something unexpected occurred");
+    return { error: { message: "Unexpected error", statusCode: 500 } };
   }
 };

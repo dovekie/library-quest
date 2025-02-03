@@ -1,12 +1,10 @@
-import { IReader } from "../types/IReader";
-
 export const LibraryInfoWindowContent = (props: {
   library: { name: string; membershipZone: number };
-  reader: IReader | null;
+  membershipZones: number[] | undefined;
   handleUpdateMembership: any;
 }) => {
-  const readerHasMembership = props.reader?.membership_zone
-    ? props.reader.membership_zone.includes(props.library.membershipZone)
+  const readerHasMembership = props.membershipZones
+    ? props.membershipZones.includes(props.library.membershipZone)
     : false;
   return (
     <div>
@@ -20,7 +18,7 @@ export const LibraryInfoWindowContent = (props: {
         <input
           className="change-membership-button"
           type="submit"
-          disabled={!props.reader}
+          // disabled={!props.reader}
           value={readerHasMembership ? "Remove" : "Add"}
         />
       </form>

@@ -221,7 +221,7 @@ function App() {
           <Toaster />
           <MapBox
             libraries={libraries}
-            reader={reader}
+            membershipZones={reader?.membership_zone}
             handleUpdateMembership={handleUpdateMembership}
           />
           <Modal

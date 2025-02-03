@@ -14,6 +14,10 @@ class MembershipZone(models.Model):
 class Library(models.Model):
     name = models.CharField("Name", max_length=240)
     address = models.CharField("Address", max_length=240)
+    city = models.CharField("City", max_length=240)
+    zip = models.CharField("Zip", max_length=5)
+    url = models.URLField("URL")
+    phone = models.CharField("Phone", max_length=14)
     # TODO use PostGIS type for lat and lon
     lat = models.FloatField("Lat")
     lon = models.FloatField("Lon")

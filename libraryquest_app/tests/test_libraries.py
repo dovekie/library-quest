@@ -13,10 +13,14 @@ class LibraryApiTest(TestCase):
             {
                 "id": 1,
                 "name": "Oakland Public Library Main",
-                "address": "125 14th St, Oakland, CA 94612",
+                "address": "125 14th St",
                 "lat": 37.80131995454677,
                 "lon": -122.26345590757161,
                 "membership_zone": 1,
+                "city": "Oakland",
+                "phone": "555-555-5555",
+                "zip": "94612",
+                "url": "https://oaklandlibrary.org/",
             },
         )
 

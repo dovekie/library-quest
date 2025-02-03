@@ -1,20 +1,19 @@
 import { APIProvider, Map } from "@vis.gl/react-google-maps";
 import { ILibraryAddress } from "../types/ILibraryAddress";
 import { ILibraryLocation } from "../types/ILibraryLocation";
-import { IReader } from "../types/IReader";
 import { LibraryMarkers } from "./LibraryMarkers";
 
 export const MapBox = (props: {
   libraries: ILibraryAddress[];
-  reader: IReader | null;
+  membershipZones: number[] | undefined;
   handleUpdateMembership: any;
 }) => {
   const locations: ILibraryLocation[] = props.libraries?.map((library) => ({
     key: library.id,
     name: library.name,
     location: { lat: library.lat, lng: library.lon },
-    isMember: props.reader
-      ? props.reader.membership_zone?.includes(library.membership_zone)
+    isMember: props.membershipZones
+      ? props.membershipZones?.includes(library.membership_zone)
       : false,
     membershipZone: library.membership_zone,
   }));
@@ -36,7 +35,7 @@ export const MapBox = (props: {
         >
           <LibraryMarkers
             locations={locations}
-            reader={props.reader}
+            membershipZones={props.membershipZones}
             handleUpdateMembership={props.handleUpdateMembership}
           />
         </Map>

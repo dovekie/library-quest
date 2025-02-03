@@ -7,15 +7,14 @@ import {
   useAdvancedMarkerRef,
 } from "@vis.gl/react-google-maps";
 import { LibraryInfoWindowContent } from "./LibraryInfoWindow";
-import { IReader } from "../types/IReader";
 
 export const LibraryMarkers = ({
   locations,
-  reader,
+  membershipZones,
   handleUpdateMembership
 }: {
   locations: any;
-  reader: IReader | null;
+  membershipZones: number[] | undefined;
   handleUpdateMembership: any
 }) => {
   return locations.map((location: ILibraryLocation) => {
@@ -50,7 +49,7 @@ export const LibraryMarkers = ({
                 name: location.name,
                 membershipZone: location.membershipZone,
               }}
-              reader={reader}
+              membershipZones={membershipZones}
               handleUpdateMembership={handleUpdateMembership} 
             />
           </InfoWindow>

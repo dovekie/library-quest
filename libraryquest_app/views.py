@@ -1,8 +1,12 @@
-from django.http import HttpResponseNotFound
+from django.http import HttpResponse, HttpResponseNotFound
 from django.shortcuts import render
+from requests import Session
 from rest_framework import viewsets
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.decorators import action, permission_classes
+from rest_framework.permissions import IsAdminUser, IsAuthenticated
 from rest_framework_simplejwt.authentication import JWTAuthentication
+
+from libraryquest_app.util import batch_create_libraries
 from .permissions import UserPermission
 from .models import Library, Reader, MembershipZone
 from .serializers import LibrarySerializer, ReaderSerializer, MembershipZoneSerializer
@@ -11,6 +15,22 @@ from .serializers import LibrarySerializer, ReaderSerializer, MembershipZoneSeri
 class LibraryView(viewsets.ModelViewSet):
     serializer_class = LibrarySerializer
     queryset = Library.objects.all()
+
+    # /api/libraries/batch/
+    @action(
+        detail=False,
+        methods=["POST"],
+        name="Batch Library Uploader",
+        permission_classes=[IsAdminUser],
+    )
+    def batch(self, request):
+        source_url = request.data["url"]
+        with Session() as session:
+            response = session.get(source_url)
+            batch_create_libraries.create_libraries(response.text)
+
+            return HttpResponse("Success!")
+        return HttpResponse("Something went wrong", status_code=500)
 
 
 class MembershipZoneView(viewsets.ModelViewSet):
@@ -23,7 +43,8 @@ class ReaderView(viewsets.ModelViewSet):
     permission_classes = [IsAuthenticated, UserPermission]
     serializer_class = ReaderSerializer
     queryset = Reader.objects.all()
-    
+
+
 def confirm_new_password(request, uid, token):
     return render(request, "confirm_password.html", {"uid": uid, "token": token})
 

@@ -9,13 +9,18 @@ export const MapBox = (props: {
   handleUpdateMembership: any;
 }) => {
   const locations: ILibraryLocation[] = props.libraries?.map((library) => ({
-    key: library.id,
-    name: library.name,
-    location: { lat: library.lat, lng: library.lon },
+    address: library.address,
+    city: library.city,
     isMember: props.membershipZones
       ? props.membershipZones?.includes(library.membership_zone)
       : false,
+    key: library.id,
+    location: { lat: library.lat, lng: library.lon },
     membershipZone: library.membership_zone,
+    name: library.name,
+    phone: library.phone,
+    url: library.url,
+    zip: library.zip
   }));
   const googleMapApiKey = import.meta.env.VITE_REACT_APP_MAP_KEY;
   const googleMapId = import.meta.env.VITE_REACT_APP_MAP_ID;

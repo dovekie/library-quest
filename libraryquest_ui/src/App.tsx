@@ -44,11 +44,11 @@ function App() {
 
   useEffect(() => {
     const refreshJwtToken = async () => {
-      const refreshToken = await Cookies.get("refreshToken");
+      const refreshToken = Cookies.get("refreshToken");
       if (refreshToken) {
         const tokenResponse = await fetchRefreshedJwtToken(refreshToken);
         if (tokenResponse.error) {
-          await Cookies.remove("refreshToken");
+          Cookies.remove("refreshToken");
           return;
         }
         if (tokenResponse.data) {

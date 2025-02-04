@@ -45,10 +45,7 @@ export const LibraryMarkers = ({
         {infoWindowShown && (
           <InfoWindow className="info-window" anchor={marker} onClose={handleClose}>
             <LibraryInfoWindowContent
-              library={{
-                name: location.name,
-                membershipZone: location.membershipZone,
-              }}
+              library={location}
               membershipZones={membershipZones}
               handleUpdateMembership={handleUpdateMembership} 
             />

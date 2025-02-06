@@ -1,12 +1,10 @@
 import { jwtDecode, JwtPayload } from "jwt-decode";
-import { SetStateAction, useEffect, useState } from "react";
+import { useEffect, useReducer } from "react";
 import Cookies from "js-cookie";
 import { Toaster } from "react-hot-toast";
 import "./App.css";
 import { MapBox } from "./mapInterface/MapBox";
-import { ILibraryAddress } from "./types/ILibraryAddress";
 import { Header } from "./components/Header";
-import { IReader } from "./types/IReader";
 import {
   createUser,
   fetchLibraries,
@@ -21,22 +19,29 @@ import { Modal } from "./components/Modal";
 import { LoginForm } from "./components/LoginForm";
 import { SignupForm } from "./components/SignupForm";
 import { ForgotPasswordForm } from "./components/ForgotPasswordForm";
+import { IState } from "./types/IState";
+import { reducer } from "./reducer";
 
 function App() {
-  const [libraries, setLibraries] = useState<ILibraryAddress[]>([]);
-  const [reader, setReader] = useState<IReader | null>(null);
-  const [username, setUsername] = useState<string>("");
-  const [password, setPassword] = useState<string>("");
-  const [modalShown, showModal] = useState<boolean>(false);
-  const [signupModalShown, showSignupModal] = useState<boolean>(false);
-  const [resetModalShown, showResetModal] = useState<boolean>(false);
+
+  const initialState: IState = {
+    libraries: [],
+    reader: null,
+    username: "",
+    password: "",
+    modalShown: false,
+    signupModalShown: false,
+    resetModalShown: false,
+  };
+
+  const [state, dispatch] = useReducer(reducer, initialState);
 
   // called asynchronously after render
   useEffect(() => {
     const getAllLibraries = async () => {
       const response = await fetchLibraries();
       if (response.data) {
-        setLibraries(response.data);
+        dispatch({ type: "load-libraries", payload: response.data });
       }
     };
     getAllLibraries();
@@ -66,11 +71,10 @@ function App() {
   };
 
   const handleLogin = async (event?: any) => {
-    setUsername("");
-    setPassword("");
+    dispatch({ type: "reset-login" });
     const tokenResponse = await fetchNewJwtToken({
-      username,
-      password,
+      username: state.username,
+      password: state.password,
     });
     if (tokenResponse.data) {
       closeAllModals();
@@ -89,7 +93,7 @@ function App() {
       email: target.form.email.value,
     });
     if (response.data) {
-      showSignupModal(false);
+      dispatch({ type: "show-signup-modal" });
       const tokenResponse = await fetchNewJwtToken({
         username: target.form.new_username.value,
         password: target.form.new_password.value,
@@ -116,7 +120,10 @@ function App() {
       });
     }
     if (response.data) {
-      setReader({ ...response.data, token: tokenResponse.access });
+      dispatch({
+        type: "set-reader",
+        payload: { ...response.data, token: tokenResponse.access },
+      });
     }
   };
 
@@ -125,14 +132,14 @@ function App() {
     membershipZone: string
   ) => {
     const convertedMembershipZone = Number(membershipZone);
-    if (!reader) {
+    if (!state.reader) {
       return;
     }
     if (action === "Add") {
-      return [...reader.membership_zone, convertedMembershipZone];
+      return [...state.reader.membership_zone, convertedMembershipZone];
     }
     if (action === "Remove") {
-      return reader.membership_zone.filter(
+      return state.reader.membership_zone.filter(
         (zone) => zone !== convertedMembershipZone
       );
     }
@@ -145,60 +152,57 @@ function App() {
     event.preventDefault();
     const membershipZone = event.target[0].value;
     const action = event.target[1].value;
-    if (!reader || !reader.token) {
+    if (!state.reader || !state.reader.token) {
       return;
     }
-    const decoded = jwtDecode(reader.token) as JwtPayload & {
+    const decoded = jwtDecode(state.reader.token) as JwtPayload & {
       user_id: string;
     };
     const updateResponse = await updateReaderMembership(
       decoded.user_id,
       generateNewMembershipZoneList(action, membershipZone),
-      reader.token
+      state.reader.token
     );
     if (updateResponse.data) {
-      setReader({ ...updateResponse.data, token: reader.token });
+      dispatch({
+        type: "set-reader",
+        payload: { ...updateResponse.data, token: state.reader.token },
+      });
     }
   };
 
   const handleLogout = () => {
     Cookies.remove("refreshToken");
-    setReader(null);
+    dispatch({ type: "set-reader", payload: null });
   };
 
-  const handleUsernameChange = (event: {
-    target: { value: SetStateAction<string> };
-  }) => {
-    setUsername(event.target.value);
+  const handleUsernameChange = (event: { target: { value: string } }) => {
+    dispatch({ type: "set-username", payload: event.target.value });
   };
 
-  const handlePasswordChange = (event: {
-    target: { value: SetStateAction<string> };
-  }) => {
-    setPassword(event.target.value);
+  const handlePasswordChange = (event: { target: { value: string } }) => {
+    dispatch({ type: "set-password", payload: event.target.value });
   };
 
   const openLoginWindow = () => {
-    showModal(true);
+    dispatch({ type: "show-login-modal" });
   };
 
   const openSignupWindow = () => {
-    showSignupModal(true);
+    dispatch({ type: "show-signup-modal" });
   };
 
   const closeAllModals = (event?: any) => {
     resetForm(event);
-    showModal(false);
-    showSignupModal(false);
-    showResetModal(false);
+    dispatch({ type: "hide-modals" });
   };
 
   const openPasswordResetForm = (event?: any) => {
     if (event?.target?.form) {
       resetForm(event);
     }
-    closeAllModals();
-    showResetModal(true);
+    dispatch({ type: "hide-modals" });
+    dispatch({ type: "show-reset-modal" });
   };
 
   const handleForgotPassword = async (event: { target: any }) => {
@@ -211,8 +215,8 @@ function App() {
     <>
       <ErrorBoundary>
         <Header
-          name={reader ? reader.name : null}
-          loggedIn={reader ? true : false}
+          name={state.reader ? state.reader.name : null}
+          loggedIn={state.reader ? true : false}
           handleLogout={handleLogout}
           openLoginWindow={openLoginWindow}
           openSignupWindow={openSignupWindow}
@@ -220,12 +224,12 @@ function App() {
         <main>
           <Toaster />
           <MapBox
-            libraries={libraries}
-            membershipZones={reader?.membership_zone}
+            libraries={state.libraries}
+            membershipZones={state.reader?.membership_zone}
             handleUpdateMembership={handleUpdateMembership}
           />
           <Modal
-            show={modalShown}
+            show={state.modalShown}
             children={
               <LoginForm
                 closeLoginWindow={closeAllModals}
@@ -237,7 +241,7 @@ function App() {
             }
           />
           <Modal
-            show={signupModalShown}
+            show={state.signupModalShown}
             children={
               <SignupForm
                 closeSignupWindow={closeAllModals}
@@ -248,7 +252,7 @@ function App() {
             }
           />
           <Modal
-            show={resetModalShown}
+            show={state.resetModalShown}
             children={
               <ForgotPasswordForm
                 handleForgotPassword={handleForgotPassword}

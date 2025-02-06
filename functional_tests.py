@@ -25,13 +25,13 @@ class NewVisitorTest(unittest.TestCase):
     def test_one_info_window_shows_on_marker_click(self):
         self.browser.get("http://localhost:5173/")
         time.sleep(3)
-        non_membership_markers = self.browser.find_elements(By.CLASS_NAME, "no-membership-marker")
+        non_membership_markers = self.browser.find_elements(By.CLASS_NAME, "library-1246")
         marker = non_membership_markers[0]
         marker.click()
         visible_info_windows = self.browser.find_elements(By.CLASS_NAME, "info-window")
         self.assertEqual(len(visible_info_windows), 1)
-        next_marker = non_membership_markers[-1]
-        next_marker.click()
+        next_marker = self.browser.find_elements(By.CLASS_NAME, "library-1247")
+        next_marker[0].click()
         visible_info_windows = self.browser.find_elements(By.CLASS_NAME, "info-window")
         self.assertEqual(len(visible_info_windows), 1)
 
@@ -88,7 +88,7 @@ class NewVisitorTest(unittest.TestCase):
         username_box.send_keys("robinswift")
         submit_button.click()
         time.sleep(3)
-        non_membership_markers = self.browser.find_elements(By.CLASS_NAME, "no-membership-marker")
+        non_membership_markers = self.browser.find_elements(By.CLASS_NAME, "library-1246")
         marker = non_membership_markers[0]
         marker.click()
         time.sleep(3)
@@ -96,7 +96,7 @@ class NewVisitorTest(unittest.TestCase):
         add_membership_button.click()
         time.sleep(3)
         membership_markers = self.browser.find_elements(By.CLASS_NAME, "membership-marker")
-        self.assertEqual(len(membership_markers), 4)
+        self.assertEqual(len(membership_markers), 29)
         marker.click()
         remove_membership_button = self.browser.find_element(By.CLASS_NAME, "change-membership-button")
         remove_membership_button.click()

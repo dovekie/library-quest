@@ -32,7 +32,7 @@ export const LibraryMarkers = ({
           ref={markerRef}
           position={location.location}
           className={
-            location.isMember ? "membership-marker" : "no-membership-marker"
+            location.isMember ? `membership-marker library-${location.key}` : `no-membership-marker library-${location.key}`
           }
           onClick={handleMarkerClick}
         >

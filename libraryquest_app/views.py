@@ -1,8 +1,8 @@
 from django.http import HttpResponse, HttpResponseNotFound
 from django.shortcuts import render
 from requests import Session
-from rest_framework import viewsets
-from rest_framework.decorators import action, permission_classes
+from rest_framework import viewsets, filters
+from rest_framework.decorators import action
 from rest_framework.permissions import IsAdminUser, IsAuthenticated
 from rest_framework_simplejwt.authentication import JWTAuthentication
 
@@ -13,6 +13,12 @@ from .serializers import LibrarySerializer, ReaderSerializer, MembershipZoneSeri
 
 
 class LibraryView(viewsets.ModelViewSet):
+    search_fields = [
+        "address",
+        "city",
+        "name",
+    ]
+    filter_backends=(filters.SearchFilter,)
     serializer_class = LibrarySerializer
     queryset = Library.objects.all()
 

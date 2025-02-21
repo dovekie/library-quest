@@ -1,5 +1,5 @@
 import { jwtDecode, JwtPayload } from "jwt-decode";
-import { useEffect, useReducer } from "react";
+import { FormEvent, useEffect, useReducer } from "react";
 import Cookies from "js-cookie";
 import { Toaster } from "react-hot-toast";
 import "./App.css";
@@ -21,9 +21,10 @@ import { SignupForm } from "./components/SignupForm";
 import { ForgotPasswordForm } from "./components/ForgotPasswordForm";
 import { IState } from "./types/IState";
 import { reducer } from "./reducer";
+import { EMembershipAction } from "./types/EMembershipAction";
+import { getFormValue } from "./util/getFormValue";
 
 function App() {
-
   const initialState: IState = {
     libraries: [],
     reader: null,
@@ -64,13 +65,13 @@ function App() {
     refreshJwtToken();
   }, []);
 
-  const resetForm = (event?: any) => {
+  const resetForm = (event?: FormEvent<HTMLFormElement>) => {
     if (event) {
-      event.target.form.reset();
+      event.currentTarget.form.reset();
     }
   };
 
-  const handleLogin = async (event?: any) => {
+  const handleLogin = async (event?: FormEvent<HTMLFormElement>) => {
     dispatch({ type: "reset-login" });
     const tokenResponse = await fetchNewJwtToken({
       username: state.username,
@@ -83,20 +84,20 @@ function App() {
     resetForm(event);
   };
 
-  const handleSignup = async (event: { target: any }) => {
-    const { target } = event;
+  const handleSignup = async (event: FormEvent<HTMLFormElement>) => {
+    const { currentTarget } = event;
     const response = await createUser({
-      username: target.form.new_username.value,
-      password: target.form.new_password.value,
-      re_password: target.form.re_password.value,
-      name: target.form.name.value,
-      email: target.form.email.value,
+      username: currentTarget.form.new_username.value,
+      password: currentTarget.form.new_password.value,
+      re_password: currentTarget.form.re_password.value,
+      name: currentTarget.form.name.value,
+      email: currentTarget.form.email.value,
     });
     if (response.data) {
       dispatch({ type: "show-signup-modal" });
       const tokenResponse = await fetchNewJwtToken({
-        username: target.form.new_username.value,
-        password: target.form.new_password.value,
+        username: currentTarget.form.new_username.value,
+        password: currentTarget.form.new_password.value,
       });
       if (tokenResponse.data) {
         await getAuthedReader(tokenResponse.data);
@@ -128,7 +129,7 @@ function App() {
   };
 
   const generateNewMembershipZoneList = (
-    action: "Add" | "Remove",
+    action: EMembershipAction,
     membershipZone: string
   ) => {
     const convertedMembershipZone = Number(membershipZone);
@@ -145,13 +146,12 @@ function App() {
     }
   };
 
-  const handleUpdateMembership = async (event: {
-    preventDefault: () => void;
-    target: { value: any }[]; // FIXME any
-  }) => {
+  const handleUpdateMembership = async (
+    event: FormEvent<HTMLFormElement>
+  ) => {
     event.preventDefault();
-    const membershipZone = event.target[0].value;
-    const action = event.target[1].value;
+    const membershipZone = getFormValue<string>(event, "membershipZone");
+    const action = getFormValue<EMembershipAction>(event, "actionType");
     if (!state.reader || !state.reader.token) {
       return;
     }
@@ -176,12 +176,18 @@ function App() {
     dispatch({ type: "set-reader", payload: null });
   };
 
-  const handleUsernameChange = (event: { target: { value: string } }) => {
-    dispatch({ type: "set-username", payload: event.target.value });
+  const handleUsernameChange = (event: FormEvent<HTMLFormElement>) => {
+    dispatch({
+      type: "set-username",
+      payload: event.currentTarget.value,
+    });
   };
 
-  const handlePasswordChange = (event: { target: { value: string } }) => {
-    dispatch({ type: "set-password", payload: event.target.value });
+  const handlePasswordChange = (event: FormEvent<HTMLFormElement>) => {
+    dispatch({
+      type: "set-password",
+      payload: event.currentTarget.value,
+    });
   };
 
   const openLoginWindow = () => {
@@ -192,22 +198,20 @@ function App() {
     dispatch({ type: "show-signup-modal" });
   };
 
-  const closeAllModals = (event?: any) => {
+  const closeAllModals = (event?: FormEvent<HTMLFormElement>) => {
     resetForm(event);
     dispatch({ type: "hide-modals" });
   };
 
-  const openPasswordResetForm = (event?: any) => {
-    if (event?.target?.form) {
-      resetForm(event);
-    }
+  const openPasswordResetForm = (event?: FormEvent<HTMLFormElement>) => {
+    resetForm(event);
     dispatch({ type: "hide-modals" });
     dispatch({ type: "show-reset-modal" });
   };
 
-  const handleForgotPassword = async (event: { target: any }) => {
-    const { target } = event;
-    resetPassword(target.form.email.value);
+  const handleForgotPassword = async (event: FormEvent<HTMLFormElement>) => {
+    const { currentTarget } = event;
+    resetPassword(currentTarget.form.email.value);
     closeAllModals();
   };
 

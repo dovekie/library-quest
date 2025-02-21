@@ -11,11 +11,11 @@ import { LibraryInfoWindowContent } from "./LibraryInfoWindow";
 export const LibraryMarkers = ({
   locations,
   membershipZones,
-  handleUpdateMembership
+  handleUpdateMembership,
 }: {
-  locations: any;
+  locations: ILibraryLocation[];
   membershipZones: number[] | undefined;
-  handleUpdateMembership: any
+  handleUpdateMembership: (event: React.FormEvent<HTMLFormElement>) => void;
 }) => {
   return locations.map((location: ILibraryLocation) => {
     const [infoWindowShown, setInfoWindowShown] = useState(false);
@@ -32,7 +32,9 @@ export const LibraryMarkers = ({
           ref={markerRef}
           position={location.location}
           className={
-            location.isMember ? `membership-marker library-${location.key}` : `no-membership-marker library-${location.key}`
+            location.isMember
+              ? `membership-marker library-${location.key}`
+              : `no-membership-marker library-${location.key}`
           }
           onClick={handleMarkerClick}
         >
@@ -43,11 +45,15 @@ export const LibraryMarkers = ({
           />
         </AdvancedMarker>
         {infoWindowShown && (
-          <InfoWindow className="info-window" anchor={marker} onClose={handleClose}>
+          <InfoWindow
+            className="info-window"
+            anchor={marker}
+            onClose={handleClose}
+          >
             <LibraryInfoWindowContent
               library={location}
               membershipZones={membershipZones}
-              handleUpdateMembership={handleUpdateMembership} 
+              handleUpdateMembership={handleUpdateMembership}
             />
           </InfoWindow>
         )}

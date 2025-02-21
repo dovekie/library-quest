@@ -31,6 +31,7 @@ export const LibraryInfoWindowContent = (props: {
           <input
             className="change-membership-button"
             type="submit"
+            name="actionType"
             // disabled={!props.reader}
             value={readerHasMembership ? "Remove" : "Add"}
           />

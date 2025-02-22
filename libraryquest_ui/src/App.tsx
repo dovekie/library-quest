@@ -12,6 +12,7 @@ import {
   fetchReader,
   fetchRefreshedJwtToken,
   resetPassword,
+  searchForLibrary,
   updateReaderMembership,
 } from "./api/apiInterface";
 import { ErrorBoundary } from "./components/ErrorBoundary";
@@ -23,6 +24,7 @@ import { IState } from "./types/IState";
 import { reducer } from "./reducer";
 import { EMembershipAction } from "./types/EMembershipAction";
 import { getFormValue } from "./util/getFormValue";
+import { Button } from "./components/Button";
 
 function App() {
   const initialState: IState = {
@@ -146,9 +148,7 @@ function App() {
     }
   };
 
-  const handleUpdateMembership = async (
-    event: FormEvent<HTMLFormElement>
-  ) => {
+  const handleUpdateMembership = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const membershipZone = getFormValue<string>(event, "membershipZone");
     const action = getFormValue<EMembershipAction>(event, "actionType");
@@ -227,6 +227,34 @@ function App() {
         />
         <main>
           <Toaster />
+          <div>
+            <form>
+              <label>Search for a library</label>
+              <input type="text" name="search_input"></input>
+              <Button
+                id="submit-library-search"
+                onClick={async (event: any) => {
+                  event.preventDefault();
+                  const searchTerm =
+                    event.currentTarget.form.search_input.value;
+                  const response = await searchForLibrary(searchTerm);
+                  if (response.data) {
+                    console.log("got data", response.data);
+                    dispatch({
+                      type: "load-libraries",
+                      payload: response.data,
+                    });
+                  }
+                }}
+                label="Search"
+              />
+              <Button
+                id="clear-library-search"
+                onClick={() => {}}
+                label="Clear"
+              />
+            </form>
+          </div>
           <MapBox
             libraries={state.libraries}
             membershipZones={state.reader?.membership_zone}

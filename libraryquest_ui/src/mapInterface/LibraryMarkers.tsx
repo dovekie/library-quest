@@ -1,4 +1,4 @@
-import { useState, useCallback } from "react";
+import { useState } from "react";
 import { ILibraryLocation } from "../types/ILibraryLocation";
 import {
   AdvancedMarker,
@@ -19,13 +19,11 @@ export const LibraryMarkers = ({
 }) => {
   return locations.map((location: ILibraryLocation) => {
     const [infoWindowShown, setInfoWindowShown] = useState(false);
-    const handleMarkerClick = useCallback(
-      () => setInfoWindowShown((isShown) => !isShown),
-      []
-    );
+    const handleMarkerClick = () =>
+      setInfoWindowShown((isShown: boolean) => !isShown);
     const [markerRef, marker] = useAdvancedMarkerRef();
 
-    const handleClose = useCallback(() => setInfoWindowShown(false), []);
+    const handleClose = () => setInfoWindowShown(false);
     return (
       <div key={location.key}>
         <AdvancedMarker

@@ -177,6 +177,9 @@ function App() {
     const searchTerm = event.currentTarget.form
       ? event.currentTarget.form.search_input.value
       : event.target[0].value;
+    if (searchTerm === "") {
+      dispatch({ type: "update-search", payload: null });
+    }
     const response = await searchForLibrary(searchTerm);
     if (response.data) {
       const searchResults = response.data.map((result) => result.id);

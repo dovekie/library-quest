@@ -6,6 +6,7 @@ import { LibraryMarker } from "./LibraryMarker";
 export const MapBox = (props: {
   libraries: ILibraryAddress[];
   membershipZones: number[] | undefined;
+  searchResults: string[] | null;
   handleUpdateMembership: any;
 }) => {
   const locations: ILibraryLocation[] = props.libraries?.map((library) => ({
@@ -44,6 +45,7 @@ export const MapBox = (props: {
             <LibraryMarker
               location={location}
               membershipZones={props.membershipZones}
+              searchResults={props.searchResults}
               handleUpdateMembership={props.handleUpdateMembership}
             ></LibraryMarker>
           ))}

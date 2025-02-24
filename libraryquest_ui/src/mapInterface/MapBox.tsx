@@ -1,7 +1,7 @@
 import { APIProvider, Map } from "@vis.gl/react-google-maps";
 import { ILibraryAddress } from "../types/ILibraryAddress";
 import { ILibraryLocation } from "../types/ILibraryLocation";
-import { LibraryMarkers } from "./LibraryMarkers";
+import { LibraryMarker } from "./LibraryMarker";
 
 export const MapBox = (props: {
   libraries: ILibraryAddress[];
@@ -20,10 +20,12 @@ export const MapBox = (props: {
     name: library.name,
     phone: library.phone,
     url: library.url,
-    zip: library.zip
+    zip: library.zip,
   }));
+
   const googleMapApiKey = import.meta.env.VITE_REACT_APP_MAP_KEY;
   const googleMapId = import.meta.env.VITE_REACT_APP_MAP_ID;
+
   return (
     <div className="map-box">
       <APIProvider
@@ -38,11 +40,13 @@ export const MapBox = (props: {
           gestureHandling={"greedy"}
           disableDefaultUI={true}
         >
-          <LibraryMarkers
-            locations={locations}
-            membershipZones={props.membershipZones}
-            handleUpdateMembership={props.handleUpdateMembership}
-          />
+          {locations.map((location) => (
+            <LibraryMarker
+              location={location}
+              membershipZones={props.membershipZones}
+              handleUpdateMembership={props.handleUpdateMembership}
+            ></LibraryMarker>
+          ))}
         </Map>
       </APIProvider>
     </div>

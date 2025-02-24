@@ -21,11 +21,13 @@ class NewVisitorTest(unittest.TestCase):
         # sees a map
         map_box = self.browser.find_element(By.CLASS_NAME, "map-box")
         self.assertTrue(map_box.is_displayed())
-    
+
     def test_one_info_window_shows_on_marker_click(self):
         self.browser.get("http://localhost:5173/")
         time.sleep(3)
-        non_membership_markers = self.browser.find_elements(By.CLASS_NAME, "library-1246")
+        non_membership_markers = self.browser.find_elements(
+            By.CLASS_NAME, "library-1246"
+        )
         marker = non_membership_markers[0]
         marker.click()
         visible_info_windows = self.browser.find_elements(By.CLASS_NAME, "info-window")
@@ -58,8 +60,8 @@ class NewVisitorTest(unittest.TestCase):
         welcome = self.browser.find_element(By.CLASS_NAME, "header--welcome-name")
         self.assertIn(welcome.text, "Welcome, ally aardvark!")
 
-# FIXME these tests will break if any changes are made to the test user's memberships
-    def test_logged_in_user_sees_membership_markers(self): 
+    # FIXME these tests will break if any changes are made to the test user's memberships
+    def test_logged_in_user_sees_membership_markers(self):
         self.browser.get("http://localhost:5173/")
         time.sleep(3)
         login_button = self.browser.find_element(By.ID, "login-button")
@@ -73,7 +75,9 @@ class NewVisitorTest(unittest.TestCase):
         time.sleep(3)
         welcome = self.browser.find_element(By.CLASS_NAME, "header--welcome-name")
         self.assertIn(welcome.text, "Welcome, Robin Swift!")
-        membership_markers = self.browser.find_elements(By.CLASS_NAME, "membership-marker")
+        membership_markers = self.browser.find_elements(
+            By.CLASS_NAME, "membership-marker"
+        )
         self.assertEqual(len(membership_markers), 3)
 
     def test_user_can_add_and_remove_memberships(self):
@@ -88,21 +92,47 @@ class NewVisitorTest(unittest.TestCase):
         username_box.send_keys("robinswift")
         submit_button.click()
         time.sleep(3)
-        non_membership_markers = self.browser.find_elements(By.CLASS_NAME, "library-1246")
+        non_membership_markers = self.browser.find_elements(
+            By.CLASS_NAME, "library-1246"
+        )
         marker = non_membership_markers[0]
         marker.click()
         time.sleep(3)
-        add_membership_button = self.browser.find_element(By.CLASS_NAME, "change-membership-button")
+        add_membership_button = self.browser.find_element(
+            By.CLASS_NAME, "change-membership-button"
+        )
         add_membership_button.click()
         time.sleep(3)
-        membership_markers = self.browser.find_elements(By.CLASS_NAME, "membership-marker")
+        membership_markers = self.browser.find_elements(
+            By.CLASS_NAME, "membership-marker"
+        )
         self.assertEqual(len(membership_markers), 29)
         marker.click()
-        remove_membership_button = self.browser.find_element(By.CLASS_NAME, "change-membership-button")
+        remove_membership_button = self.browser.find_element(
+            By.CLASS_NAME, "change-membership-button"
+        )
         remove_membership_button.click()
         time.sleep(3)
-        membership_markers = self.browser.find_elements(By.CLASS_NAME, "membership-marker")
+        membership_markers = self.browser.find_elements(
+            By.CLASS_NAME, "membership-marker"
+        )
         self.assertEqual(len(membership_markers), 3)
+
+    def test_search(self):
+        self.browser.get("http://localhost:5173/")
+        time.sleep(3)
+        submit_button = self.browser.find_element(By.ID, "submit-library-search")
+        search_box = self.browser.find_element(By.NAME, "search_input")
+        search_box.send_keys("rockridge")
+        submit_button.click()
+        markers = self.browser.find_elements(By.CLASS_NAME, "no-membership-marker")
+        self.assertEqual(len(markers), 1)
+        clear_button = self.browser.find_element(By.ID, "clear-library-search")
+        clear_button.click()
+        time.sleep(3)
+        markers = self.browser.find_elements(By.CLASS_NAME, "no-membership-marker")
+        self.assertGreater(len(markers), 1)
+
 
 if __name__ == "__main__":
     unittest.main(warnings="ignore")

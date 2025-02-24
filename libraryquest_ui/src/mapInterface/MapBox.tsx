@@ -6,6 +6,7 @@ import { LibraryMarkers } from "./LibraryMarkers";
 export const MapBox = (props: {
   libraries: ILibraryAddress[];
   membershipZones: number[] | undefined;
+  searchResults: string[] | null;
   handleUpdateMembership: any;
 }) => {
   const locations: ILibraryLocation[] = props.libraries?.map((library) => ({
@@ -20,10 +21,12 @@ export const MapBox = (props: {
     name: library.name,
     phone: library.phone,
     url: library.url,
-    zip: library.zip
+    zip: library.zip,
   }));
+
   const googleMapApiKey = import.meta.env.VITE_REACT_APP_MAP_KEY;
   const googleMapId = import.meta.env.VITE_REACT_APP_MAP_ID;
+
   return (
     <div className="map-box">
       <APIProvider
@@ -42,6 +45,7 @@ export const MapBox = (props: {
             locations={locations}
             membershipZones={props.membershipZones}
             handleUpdateMembership={props.handleUpdateMembership}
+            searchResults={props.searchResults}
           />
         </Map>
       </APIProvider>

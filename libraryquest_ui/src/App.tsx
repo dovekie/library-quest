@@ -12,6 +12,7 @@ import {
   fetchReader,
   fetchRefreshedJwtToken,
   resetPassword,
+  searchForLibrary,
   updateReaderMembership,
 } from "./api/apiInterface";
 import { ErrorBoundary } from "./components/ErrorBoundary";
@@ -23,6 +24,7 @@ import { IState } from "./types/IState";
 import { reducer } from "./reducer";
 import { EMembershipAction } from "./types/EMembershipAction";
 import { getFormValue } from "./util/getFormValue";
+import { Button } from "./components/Button";
 
 function App() {
   const initialState: IState = {
@@ -33,6 +35,7 @@ function App() {
     modalShown: false,
     signupModalShown: false,
     resetModalShown: false,
+    searchResults: null,
   };
 
   const [state, dispatch] = useReducer(reducer, initialState);
@@ -146,9 +149,7 @@ function App() {
     }
   };
 
-  const handleUpdateMembership = async (
-    event: FormEvent<HTMLFormElement>
-  ) => {
+  const handleUpdateMembership = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const membershipZone = getFormValue<string>(event, "membershipZone");
     const action = getFormValue<EMembershipAction>(event, "actionType");
@@ -169,6 +170,26 @@ function App() {
         payload: { ...updateResponse.data, token: state.reader.token },
       });
     }
+  };
+
+  const handleSearch = async (event: any) => {
+    event.preventDefault();
+    const searchTerm = event.currentTarget.form
+      ? event.currentTarget.form.search_input.value
+      : event.target[0].value;
+    if (searchTerm === "") {
+      dispatch({ type: "update-search", payload: null });
+    }
+    const response = await searchForLibrary(searchTerm);
+    if (response.data) {
+      const searchResults = response.data.map((result) => result.id);
+      dispatch({ type: "update-search", payload: searchResults });
+    }
+  };
+
+  const clearSearch = (event: any) => {
+    resetForm(event);
+    dispatch({ type: "update-search", payload: null });
   };
 
   const handleLogout = () => {
@@ -227,10 +248,27 @@ function App() {
         />
         <main>
           <Toaster />
+          <div>
+            <form onSubmit={handleSearch}>
+              <label>Search for a library</label>
+              <input type="text" name="search_input"></input>
+              <Button
+                id="submit-library-search"
+                onClick={handleSearch}
+                label="Search"
+              />
+              <Button
+                id="clear-library-search"
+                onClick={clearSearch}
+                label="Clear"
+              />
+            </form>
+          </div>
           <MapBox
             libraries={state.libraries}
             membershipZones={state.reader?.membership_zone}
             handleUpdateMembership={handleUpdateMembership}
+            searchResults={state.searchResults}
           />
           <Modal
             show={state.modalShown}

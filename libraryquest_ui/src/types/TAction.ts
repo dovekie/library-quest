@@ -6,6 +6,7 @@ export type TAction =
   | { type: "set-reader"; payload: IReader | null }
   | { type: "set-username"; payload: string }
   | { type: "set-password"; payload: string }
+  | { type: "update-search"; payload: string[] | null }
   | { type: "show-login-modal" }
   | { type: "show-signup-modal" }
   | { type: "show-reset-modal" }

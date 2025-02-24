@@ -2,82 +2,18 @@
     pk: 1
     fields:
         name: Oakland
--   model: libraryquest_app.membershipzone
-    pk: 2
-    fields:
-        name: Berkeley
--   model: libraryquest_app.membershipzone
-    pk: 3
-    fields:
-        name: San Francisco
--   model: libraryquest_app.membershipzone
-    pk: 4
-    fields:
-        name: Richmond
 -   model: libraryquest_app.library
     pk: 1
     fields:
         name: Oakland Public Library Main
-        address: 125 14th St, Oakland, CA 94612
+        address: 125 14th St
+        city: Oakland
+        zip: 94612
         lat: 37.80131995454677
         lon: -122.26345590757161
+        phone: 555-555-5555
+        url: https://oaklandlibrary.org/
         membership_zone: 1
--   model: libraryquest_app.library
-    pk: 2
-    fields:
-        name: Berkeley Public Library Main
-        address: 2090 Kittredge St, Berkeley, CA 94704
-        lat: 37.8681470212658
-        lon: -122.26846226064963
-        membership_zone: 2
--   model: libraryquest_app.library
-    pk: 3
-    fields:
-        name: Richmond Public Library Main
-        address: 325 Civic Center Plaza, Richmond, CA 94804
-        lat: 37.9359335960166
-        lon: -122.3440255621011
-        membership_zone: 4
--   model: libraryquest_app.library
-    pk: 4
-    fields:
-        name: San Francisco Public Library Main
-        address: 100 Larkin St, San Francisco, CA 94102
-        lat: 37.77908984724889
-        lon: -122.41580118814296
-        membership_zone: 3
--   model: libraryquest_app.library
-    pk: 5
-    fields:
-        name: Oakland Public Library Temescal Branch
-        address: 5205 Telegraph Avenue, Oakland, California 94609
-        lat: 37.83820689759251
-        lon: -122.2624973994164
-        membership_zone: 1
--   model: libraryquest_app.library
-    pk: 6
-    fields:
-        name: Oakland Public Library 81st Avenue Branch
-        address: 1021 81st Avenue, Oakland, California 94621
-        lat: 37.753333216459694
-        lon: -122.1855559193185
-        membership_zone: 1
--   model: libraryquest_app.library
-    pk: 7
-    fields:
-        name: San Francisco Public Library Ortega Branch
-        address: 3223 Ortega St, San Francisco, CA 94122
-        lat: 37.7511743084016
-        lon: -122.4980988638723
-        membership_zone: 3
--   model: libraryquest_app.library
-    pk: 8
-    fields:
-        name: San Francisco Public Library Park Branch
-        address: 1833 Page St, San Francisco, CA 94117
-        lat: 37.77010866477082
-        lon: -122.45099978319168
-        membership_zone: 3
 -   model: libraryquest_app.reader
     pk: 1
     fields:

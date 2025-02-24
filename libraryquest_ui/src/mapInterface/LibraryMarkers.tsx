@@ -12,10 +12,12 @@ export const LibraryMarkers = ({
   locations,
   membershipZones,
   handleUpdateMembership,
+  searchResults
 }: {
   locations: ILibraryLocation[];
   membershipZones: number[] | undefined;
   handleUpdateMembership: (event: React.FormEvent<HTMLFormElement>) => void;
+  searchResults: string[] | null
 }) => {
   return locations.map((location: ILibraryLocation) => {
     const [infoWindowShown, setInfoWindowShown] = useState(false);
@@ -26,9 +28,11 @@ export const LibraryMarkers = ({
     const [markerRef, marker] = useAdvancedMarkerRef();
 
     const handleClose = useCallback(() => setInfoWindowShown(false), []);
+    const showMarker =
+      !searchResults || searchResults?.includes(location.key);
     return (
       <div key={location.key}>
-        <AdvancedMarker
+        {showMarker && <AdvancedMarker
           ref={markerRef}
           position={location.location}
           className={
@@ -43,7 +47,7 @@ export const LibraryMarkers = ({
             glyphColor={"#000"}
             borderColor={"#000"}
           />
-        </AdvancedMarker>
+        </AdvancedMarker>}
         {infoWindowShown && (
           <InfoWindow
             className="info-window"

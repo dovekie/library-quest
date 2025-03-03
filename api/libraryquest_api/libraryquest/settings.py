@@ -90,6 +90,7 @@ ROOT_URLCONF = "libraryquest.urls"
 
 CORS_ORIGIN_WHITELIST = [
     "http://localhost:5173",  # The default port for create-react-app
+    "http://localhost:8000"
 ]
 
 
@@ -119,7 +120,7 @@ SIMPLE_JWT = {
 
 CSRF_COOKIE_DOMAIN = "http://localhost:5173"
 
-CSRF_TRUSTED_ORIGINS = ["http://localhost:5173"]
+CSRF_TRUSTED_ORIGINS = ["http://localhost:5173", "http://localhost:8000"]
 
 TEMPLATES = [
     {

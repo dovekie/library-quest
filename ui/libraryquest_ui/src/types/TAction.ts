@@ -3,6 +3,7 @@ import { IReader } from "./IReader";
 
 export type TAction =
   | { type: "load-libraries"; payload: ILibraryAddress[] }
+  | { type: "set-membership-zones"; payload: number[] }
   | { type: "set-reader"; payload: IReader | null }
   | { type: "set-username"; payload: string }
   | { type: "set-password"; payload: string }

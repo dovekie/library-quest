@@ -6,6 +6,9 @@ export const reducer = (state: IState, action: TAction): IState => {
     case "load-libraries": {
       return { ...state, libraries: action.payload };
     }
+    case "set-membership-zones": {
+      return {...state, membershipZones: action.payload}
+    }
     case "set-reader": {
       return { ...state, reader: action.payload };
     }

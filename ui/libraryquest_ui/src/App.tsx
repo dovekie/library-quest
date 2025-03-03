@@ -29,6 +29,7 @@ import { Button } from "./components/Button";
 function App() {
   const initialState: IState = {
     libraries: [],
+    membershipZones: [],
     reader: null,
     username: "",
     password: "",
@@ -128,6 +129,10 @@ function App() {
         type: "set-reader",
         payload: { ...response.data, token: tokenResponse.access },
       });
+      dispatch({
+        type: "set-membership-zones",
+        payload: response.data.membership_zone,
+      });
     }
   };
 
@@ -136,39 +141,39 @@ function App() {
     membershipZone: string
   ) => {
     const convertedMembershipZone = Number(membershipZone);
-    if (!state.reader) {
-      return;
-    }
     if (action === "Add") {
-      return [...state.reader.membership_zone, convertedMembershipZone];
+      return [...state.membershipZones, convertedMembershipZone];
     }
-    if (action === "Remove") {
-      return state.reader.membership_zone.filter(
-        (zone) => zone !== convertedMembershipZone
-      );
-    }
+    // else "Remove"
+    return state.membershipZones.filter(
+      (zone) => zone !== convertedMembershipZone
+    );
   };
 
   const handleUpdateMembership = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const membershipZone = getFormValue<string>(event, "membershipZone");
     const action = getFormValue<EMembershipAction>(event, "actionType");
-    if (!state.reader || !state.reader.token) {
-      return;
-    }
-    const decoded = jwtDecode(state.reader.token) as JwtPayload & {
-      user_id: string;
-    };
-    const updateResponse = await updateReaderMembership(
-      decoded.user_id,
-      generateNewMembershipZoneList(action, membershipZone),
-      state.reader.token
+    const newMembershipZoneList = generateNewMembershipZoneList(
+      action,
+      membershipZone
     );
-    if (updateResponse.data) {
-      dispatch({
-        type: "set-reader",
-        payload: { ...updateResponse.data, token: state.reader.token },
-      });
+    dispatch({ type: "set-membership-zones", payload: newMembershipZoneList });
+    if (state.reader && state.reader.token) {
+      const decoded = jwtDecode(state.reader.token) as JwtPayload & {
+        user_id: string;
+      };
+      const updateResponse = await updateReaderMembership(
+        decoded.user_id,
+        newMembershipZoneList,
+        state.reader.token
+      );
+      if (updateResponse.data) {
+        dispatch({
+          type: "set-reader",
+          payload: { ...updateResponse.data, token: state.reader.token },
+        });
+      }
     }
   };
 
@@ -266,7 +271,7 @@ function App() {
           </div>
           <MapBox
             libraries={state.libraries}
-            membershipZones={state.reader?.membership_zone}
+            membershipZones={state.membershipZones}
             handleUpdateMembership={handleUpdateMembership}
             searchResults={state.searchResults}
           />

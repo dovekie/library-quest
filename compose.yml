@@ -1,0 +1,28 @@
+services:
+  web:
+    build: ./api
+    ports:
+      - "8888:8888"
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      DATABASE_HOST: "db"
+      DATABASE_NAME: "postgres"
+      DATABASE_USER: "postgres"
+      DATABASE_PASSWORD: "supersecret"
+  ui:
+    build: ./ui
+    ports:
+      - "8000:5173"
+  db:
+    image: postgres
+    environment:
+      POSTGRES_PASSWORD: "supersecret"
+    ports:
+      - 5432:5432
+    healthcheck:
+      test: pg_isready -U postgres
+      interval: 2s
+      timeout: 5s
+      retries: 15

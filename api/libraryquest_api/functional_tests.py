@@ -1,3 +1,4 @@
+import os
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 import unittest
@@ -7,13 +8,18 @@ import time
 class NewVisitorTest(unittest.TestCase):
     def setUp(self):
         self.browser = webdriver.Firefox()
+        test_server = os.environ.get("TEST_SERVER")
+        if test_server:
+            self.live_server_url = "http://" + test_server
+        else:
+            self.live_server_url = "http://localhost:5173/"
 
     def tearDown(self):
         self.browser.quit()
 
     def test_visitor_sees_a_map(self):
         # user visits the website
-        self.browser.get("http://localhost:5173/")
+        self.browser.get(self.live_server_url)
 
         # sees the Library Quest header
         self.assertIn("Welcome to Library Quest!", self.browser.title)
@@ -23,7 +29,7 @@ class NewVisitorTest(unittest.TestCase):
         self.assertTrue(map_box.is_displayed())
 
     def test_one_info_window_shows_on_marker_click(self):
-        self.browser.get("http://localhost:5173/")
+        self.browser.get(self.live_server_url)
         time.sleep(3)
         non_membership_markers = self.browser.find_elements(
             By.CLASS_NAME, "library-1246"
@@ -39,7 +45,7 @@ class NewVisitorTest(unittest.TestCase):
 
     @unittest.skip("skip until we can also delete users")
     def test_can_create_user(self):
-        self.browser.get("http://localhost:5173/")
+        self.browser.get(self.live_server_url)
         time.sleep(3)
         login_button = self.browser.find_element(By.ID, "signup-button")
         login_button.click()
@@ -62,7 +68,7 @@ class NewVisitorTest(unittest.TestCase):
 
     # FIXME these tests will break if any changes are made to the test user's memberships
     def test_logged_in_user_sees_membership_markers(self):
-        self.browser.get("http://localhost:5173/")
+        self.browser.get(self.live_server_url)
         time.sleep(3)
         login_button = self.browser.find_element(By.ID, "login-button")
         login_button.click()
@@ -81,7 +87,7 @@ class NewVisitorTest(unittest.TestCase):
         self.assertEqual(len(membership_markers), 3)
 
     def test_user_can_add_and_remove_memberships(self):
-        self.browser.get("http://localhost:5173/")
+        self.browser.get(self.live_server_url)
         time.sleep(3)
         login_button = self.browser.find_element(By.ID, "login-button")
         login_button.click()
@@ -119,7 +125,7 @@ class NewVisitorTest(unittest.TestCase):
         self.assertEqual(len(membership_markers), 3)
 
     def test_search(self):
-        self.browser.get("http://localhost:5173/")
+        self.browser.get(self.live_server_url)
         time.sleep(3)
         submit_button = self.browser.find_element(By.ID, "submit-library-search")
         search_box = self.browser.find_element(By.NAME, "search_input")

@@ -4,6 +4,8 @@ import { IReader } from "./IReader";
 export interface IState {
   /** All library addresses */
   libraries: ILibraryAddress[];
+  /** currently selected membership zones */
+  membershipZones: number[];
   /** the current reader */
   reader: IReader | null;
   /** username and password, for login purposes */

@@ -65,6 +65,23 @@ class NewVisitorTest(unittest.TestCase):
         time.sleep(3)
         welcome = self.browser.find_element(By.CLASS_NAME, "header--welcome-name")
         self.assertIn(welcome.text, "Welcome, ally aardvark!")
+    def test_non_login_user_can_mark_libraries(self):
+        self.browser.get(self.live_server_url)
+        time.sleep(3)
+        non_membership_markers = self.browser.find_elements(
+            By.CLASS_NAME, "library-1246"
+        )
+        marker = non_membership_markers[0]
+        marker.click()
+        add_membership_button = self.browser.find_element(
+            By.CLASS_NAME, "change-membership-button"
+        )
+        add_membership_button.click()
+        time.sleep(3)
+        membership_markers = self.browser.find_elements(
+            By.CLASS_NAME, "membership-marker"
+        )
+        self.assertEqual(len(membership_markers), 26)
 
     # FIXME these tests will break if any changes are made to the test user's memberships
     def test_logged_in_user_sees_membership_markers(self):

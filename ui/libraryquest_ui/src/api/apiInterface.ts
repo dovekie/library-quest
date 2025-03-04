@@ -106,7 +106,7 @@ export const callAPI = async ({
   try {
     const response = await axios({
       method,
-      url: `http://localhost:8000/${url}`,
+      url: `http://localhost:8888/${url}`,
       ...(data ? { data } : {}),
       ...(authToken ? { headers: { Authorization: `JWT ${authToken}` } } : {}),
     });

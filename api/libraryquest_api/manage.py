@@ -8,7 +8,9 @@ def main():
     """Run administrative tasks."""
     os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'libraryquest.settings')
     try:
+        port = os.getenv('DJANGO_PORT', '8000')  # Default to 8000 if not set
         from django.core.management import execute_from_command_line
+        execute_from_command_line(['manage.py', 'runserver', f'0.0.0.0:{port}'])
     except ImportError as exc:
         raise ImportError(
             "Couldn't import Django. Are you sure it's installed and "

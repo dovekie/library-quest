@@ -12,7 +12,7 @@ class NewVisitorTest(unittest.TestCase):
         if test_server:
             self.live_server_url = "http://" + test_server
         else:
-            self.live_server_url = "http://localhost:5173/"
+            self.live_server_url = "http://localhost:8000/"
 
     def tearDown(self):
         self.browser.quit()
